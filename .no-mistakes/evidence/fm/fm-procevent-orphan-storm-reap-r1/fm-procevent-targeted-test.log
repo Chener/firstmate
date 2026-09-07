@@ -20,11 +20,11 @@ ok - one Send & End yields exactly one captured result, automatic retirement, an
 ok - an empty board close is captured and recorded handled without ever waking the captain
 ok - a board close carrying the captain's real answer is still announced
 ok - a transient Lavish poll interruption is retried quietly and never announced
-not-autohandled: lavish-e9e6525bc8b7d25f (left for the handler; still unacknowledged)
+not-autohandled: lavish-513c33e9a996f05c (left for the handler; still unacknowledged)
 ok - an interruption that outlives the bounded retries is captured and announced
-not-autohandled: lavish-178db5aa384df4f8 (left for the handler; still unacknowledged)
+not-autohandled: lavish-9c9e048222f4530d (left for the handler; still unacknowledged)
 ok - only the exact interruption is retried; an unrelated SERVER_ERROR still surfaces
-not-autohandled: lavish-04a12f772687bc0a (left for the handler; still unacknowledged)
+not-autohandled: lavish-fc8ae26f538cad00 (left for the handler; still unacknowledged)
 ok - only the literal two-line interruption enters the quiet retry policy
 ok - arm rejects malformed and out-of-range retry delays before registration
 ok - poll cleanup safely handles an apostrophe-containing TMPDIR
@@ -39,8 +39,9 @@ ok - stale-owner recovery removes abandoned output without displacing a live own
 not-autohandled: cross-home-src (left for the handler; still unacknowledged)
 ok - cross-home stale recovery removes abandoned output from the old state directory
 not-autohandled: race-src (left for the handler; still unacknowledged)
+not-autohandled: race-src (left for the handler; still unacknowledged)
 ok - concurrent stale-claim replacement starts exactly one runner
-ok - a crashed runner leader never lets a live owned group be reclaimed as stale
+ok - an ambiguous leaderless group is preserved without replacement
 ok - a truly dead generation with no surviving group is still safely reclaimed
 ok - reconcile reclaims a dead generation whose state-root identity no longer matches
 ok - retire releases a dead generation's claim instead of refusing forever
@@ -48,7 +49,7 @@ ok - a live generation is never reclaimed, drifted state root or not
 ok - a reused pid never makes its surviving process group reclaimable
 ok - claim replacement cannot produce a torn ownership snapshot
 ok - retirement and start share one serialized lifecycle boundary
-ok - PID reuse cannot signal an unrelated process
+ok - detected PID reuse is refused before signalling
 ok - transient identity failure preserves the live source for retry
 ok - bounded home sweep preflights then retires every locally owned source
 ok - home sweep leaves foreign-home claims and runners untouched
@@ -58,6 +59,7 @@ ok - registration rejects unrepresentable newline arguments
 ok - nonzero exit with no output stays armed and silent
 ok - oversized output is bounded rather than published whole or dropped
 ok - live output stays bounded and retirement reaps the whole source group
+ok - cleanup aborts escalation after runner identity becomes ambiguous
 ok - invalid output bounds fail closed
 ok - the adapter derives physical identity without newline path corruption
 ok - source-only homes trigger the general supervision guard
@@ -77,18 +79,24 @@ ok - an adapter with no silence verdict keeps announcing every result
 ok - the published interfaces state the loss limitation and claim no lossless delivery
 registered: floor-src (lavish)
 ok - an orphaned source command obeys the launch floor during its grace window
+ok - a replacement registration starts with one fresh launch floor
+ok - post-commit pacing cleanup cannot veto registration publication
+ok - a pre-reboot monotonic stamp is treated as expired
 ok - an expired owner lease stops a self-relaunching source generation
+ok - a recreated state path does not preserve the old runner
 registered: guard-fail-src (lavish)
 ok - a runner fails closed when its owner guard cannot initialize
 registered: attached-src (lavish)
 ok - a foreground start refreshes its lease while its caller remains attached
+ok - wall-clock corrections do not alter owner lease age
+registered: detached-attached-src (lavish)
+ok - an attached-start keeper stops refreshing after its parent exits
+ok - a detected ambiguous reused-PID group is not signalled
 ok - a detached listener starts reparented, with a live descendant tree under it
 ok - a listener whose owning session is gone stops itself and its whole process group
 ok - reaping the listener stops the process churn under it
 ok - an identical listener in a home whose session is still there is untouched
 ok - retiring a source reaps its reparented listener and every descendant under it
+ok - a stop the guard cannot prove is retried until the expired runner is reaped
 
 all procevent tests passed
-real 180.32
-user 20.58
-sys 31.38
