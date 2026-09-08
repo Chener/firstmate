@@ -1,0 +1,7 @@
+SCENARIO explicit retirement reaps the runner generation
+registered: live-retire-src (lavish)
+reconciled: published=0 started=1 stopped=0 uncertain=0
+runner=38693 child=39691 group_alive_before=yes
+retired: live-retire-src
+group_alive_after_retire=no child_alive_after=no
+PASS public retire stopped the reparented runner and its real sleep descendant

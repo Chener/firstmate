@@ -1,0 +1,13 @@
+SCENARIO owner-loss reaps a real configured process tree
+registered: live-owner-src (lavish)
+reconciled: published=0 started=1 stopped=0 uncertain=0
+observed runner=21908 ppid=1 child=22216 group_alive_before=yes
+group_alive_after_lease_expiry=no child_alive_after=no
+PASS owner-loss stopped the reparented runner and its real sleep descendant
+SCENARIO recreated path lease cannot preserve old generation
+registered: live-reuse-src (lavish)
+reconciled: published=0 started=1 stopped=0 uncertain=0
+registered: live-reuse-src (lavish)
+old_runner=23369 old_state=16777235:648719844 recreated_state=16777235:648719875 fresh_lease=yes
+old_group_alive_after_recreation=no
+PASS physical state-root identity rejected the unrelated fresh lease

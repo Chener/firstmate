@@ -1,0 +1,12 @@
+SCENARIO replacing a paced registration prevents stale argv launch
+registered: live-superseded-src (lavish)
+not-autohandled: live-superseded-src (left for the handler; still unacknowledged)
+captured: /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M1ZMN7K56KSWDDGVHJFZAC46/.live-superseded.eBaJtu/home/state/procevent-inbox/live-superseded-src.1.result
+before_replacement=old,
+registered: live-superseded-src (lavish)
+after_superseded_start=old,
+not-autohandled: live-superseded-src (left for the handler; still unacknowledged)
+captured: /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M1ZMN7K56KSWDDGVHJFZAC46/.live-superseded.eBaJtu/home/state/procevent-inbox/live-superseded-src.2.result
+after_replacement_start=old,new,
+pacing_files_for_current_generation=1
+PASS stale argv did not launch; replacement launched once with one pacing file
