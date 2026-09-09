@@ -263,7 +263,9 @@
 # Verified per-harness turn-end hooks are installed automatically where enabled; some live outside the worktree.
 # Kimi uses one surgically installed Firstmate region in $HOME/.kimi-code/config.toml,
 # a firstmate-owned global hook and registry, and a gitignored per-task pointer.
-# Its delivery wait retries Enter only when a late-rendered pointer remains pending.
+# A recognized folder-trust prompt remains untouched while the live endpoint is
+# registered with delivery=unconfirmed and trust=pending; its delivery wait
+# retries Enter only when a late-rendered pointer remains pending.
 # grok uses a firstmate-owned global hook under ${GROK_HOME:-$HOME/.grok}/hooks
 # plus a gitignored .fm-grok-turnend worktree pointer and a state token.
 # muse installs no hook at all - its plugin engine is off in the default build - so
@@ -2902,11 +2904,21 @@ kimi_composer_is_empty() {
   [ "$(fm_backend_composer_state "$BACKEND" "$T" "$W" 2>/dev/null)" = empty ]
 }
 
+kimi_trust_dialog_is_pending() {  # <plain-pane-capture>
+  local pane=$1
+  printf '%s\n' "$pane" | grep -Fq 'Trust this folder?' \
+    && printf '%s\n' "$pane" | grep -Fq 'Project-level MCP servers are disabled' \
+    && printf '%s\n' "$pane" | grep -Fq 'Trust this folder' \
+    && printf '%s\n' "$pane" | grep -Fq "Don't trust"
+}
+
 kimi_wait_for_ready() {
   local pane i=0 max=${FM_KIMI_READY_POLLS:-60} interval=${FM_KIMI_POLL_INTERVAL:-0.5}
   while [ "$i" -lt "$max" ]; do
     pane=$(kimi_capture)
-    if printf '%s\n' "$pane" | grep -Fq 'Welcome to Kimi Code!' \
+    if kimi_trust_dialog_is_pending "$pane"; then
+      return 2
+    elif printf '%s\n' "$pane" | grep -Fq 'Welcome to Kimi Code!' \
        || kimi_composer_is_empty; then
       return 0
     fi
@@ -3604,7 +3616,7 @@ SPAWN_META_PATH=$SPAWN_META_TMP
 preserve_relaunch_meta() {
   awk -F= '
     BEGIN {
-      split("window endpoint_task_id worktree project harness kind mode yolo tasktmp model effort busy_gen spawn_gen traceparent backend herdr_session herdr_workspace_id herdr_tab_id herdr_pane_id zellij_session zellij_tab_id zellij_pane_id orca_worktree_id terminal cmux_workspace_id cmux_surface_id home projects control_relaunch_tx", keys, " ")
+      split("window endpoint_task_id worktree project harness kind mode yolo tasktmp model effort busy_gen spawn_gen traceparent delivery trust backend herdr_session herdr_workspace_id herdr_tab_id herdr_pane_id zellij_session zellij_tab_id zellij_pane_id orca_worktree_id terminal cmux_workspace_id cmux_surface_id home projects control_relaunch_tx", keys, " ")
       for (i in keys) owned[keys[i]] = 1
     }
     !($1 in owned)
@@ -3851,6 +3863,19 @@ spawn_record_traceparent() {
   return "$status"
 }
 
+spawn_record_kimi_trust_pending() {
+  local meta="$STATE/$ID.meta"
+  SPAWN_META_TMP="$STATE/.$ID.meta.kimi-trust.${BASHPID:-$$}"
+  if ! awk -F= '$1 != "delivery" && $1 != "trust"' "$meta" > "$SPAWN_META_TMP" \
+     || ! printf 'delivery=unconfirmed\ntrust=pending\n' >> "$SPAWN_META_TMP" \
+     || ! fm_backlog_atomic_transition publish "$SPAWN_META_TMP" "$meta" "task record" "$STATE"; then
+    rm -f "$SPAWN_META_TMP" 2>/dev/null || true
+    SPAWN_META_TMP=
+    return 1
+  fi
+  SPAWN_META_TMP=
+}
+
 # Export GOTMPDIR into the crewmate's pane shell so the agent and every child
 # process (go build, go test, ...) inherit it. Sent before the launch command so
 # the env is set when the agent starts; the brief sleep lets the export land.
@@ -3908,28 +3933,39 @@ if [ "${HERDR_PROJECTED:-0}" -eq 1 ]; then
   spawn_herdr_presentation_order_lock_release
 fi
 spawn_send_key "$T" Enter
+KIMI_TRUST_PENDING=0
 if [ "$HARNESS" = kimi ]; then
-  if ! kimi_wait_for_ready; then
+  KIMI_READY_STATUS=0
+  kimi_wait_for_ready || KIMI_READY_STATUS=$?
+  if [ "$KIMI_READY_STATUS" -eq 2 ]; then
+    KIMI_TRUST_PENDING=1
+    if ! spawn_record_kimi_trust_pending; then
+      kimi_spawn_fail "kimi folder trust is pending, but its task metadata could not be updated"
+      exit 1
+    fi
+  elif [ "$KIMI_READY_STATUS" -ne 0 ]; then
     kimi_spawn_fail "kimi did not show a verified ready signal before brief delivery"
     exit 1
   fi
-  KIMI_POINTER="Read the brief at $BRIEF_REAL and follow it exactly."
-  KIMI_SUBMIT_RETRIES=${FM_KIMI_SUBMIT_RETRIES:-3}
-  KIMI_SUBMIT_SLEEP=${FM_KIMI_SUBMIT_SLEEP:-${FM_KIMI_POLL_INTERVAL:-0.5}}
-  KIMI_SUBMIT_SETTLE=${FM_KIMI_SUBMIT_SETTLE:-0}
-  if ! KIMI_SUBMIT_VERDICT=$(fm_backend_send_text_submit \
-      "$BACKEND" "$T" "$KIMI_POINTER" "$KIMI_SUBMIT_RETRIES" \
-      "$KIMI_SUBMIT_SLEEP" "$KIMI_SUBMIT_SETTLE" "$W"); then
-    kimi_spawn_fail "kimi brief pointer could not be submitted"
-    exit 1
-  fi
-  if [ "$KIMI_SUBMIT_VERDICT" = send-failed ]; then
-    kimi_spawn_fail "kimi brief pointer could not be submitted"
-    exit 1
-  fi
-  if ! kimi_wait_for_delivery; then
-    kimi_spawn_fail "kimi brief pointer delivery was not confirmed"
-    exit 1
+  if [ "$KIMI_TRUST_PENDING" -eq 0 ]; then
+    KIMI_POINTER="Read the brief at $BRIEF_REAL and follow it exactly."
+    KIMI_SUBMIT_RETRIES=${FM_KIMI_SUBMIT_RETRIES:-3}
+    KIMI_SUBMIT_SLEEP=${FM_KIMI_SUBMIT_SLEEP:-${FM_KIMI_POLL_INTERVAL:-0.5}}
+    KIMI_SUBMIT_SETTLE=${FM_KIMI_SUBMIT_SETTLE:-0}
+    if ! KIMI_SUBMIT_VERDICT=$(fm_backend_send_text_submit \
+        "$BACKEND" "$T" "$KIMI_POINTER" "$KIMI_SUBMIT_RETRIES" \
+        "$KIMI_SUBMIT_SLEEP" "$KIMI_SUBMIT_SETTLE" "$W"); then
+      kimi_spawn_fail "kimi brief pointer could not be submitted"
+      exit 1
+    fi
+    if [ "$KIMI_SUBMIT_VERDICT" = send-failed ]; then
+      kimi_spawn_fail "kimi brief pointer could not be submitted"
+      exit 1
+    fi
+    if ! kimi_wait_for_delivery; then
+      kimi_spawn_fail "kimi brief pointer delivery was not confirmed"
+      exit 1
+    fi
   fi
 fi
 if [ "$HARNESS" = rovo ]; then
@@ -4031,6 +4067,12 @@ if [ -n "$SPAWN_DEFERRED_SIGNAL" ]; then
 fi
 fm_lock_release "$SPAWN_META_LOCK"
 SPAWN_META_LOCK_HELD=0
+
+if [ "$KIMI_TRUST_PENDING" -eq 1 ]; then
+  printf 'blocked: Kimi is waiting for human folder trust\n' >> "$STATE/$ID.status"
+  echo "blocked: Kimi is waiting for human folder trust; window=$T" >&2
+  exit 1
+fi
 
 SPAWN_DELIVERY=
 [ -z "$MODE" ] || SPAWN_DELIVERY=" mode=$MODE yolo=$YOLO"

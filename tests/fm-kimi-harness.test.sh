@@ -562,7 +562,7 @@ test_kimi_readiness_gate_precedes_pointer() {
 }
 
 test_kimi_does_not_answer_project_mcp_trust() {
-  local id rec out rc
+  local id rec out rc crew_state meta state
   id=kimi-trust-z6
   rec=$(make_spawn_case trust "$id")
   read_spawn_record "$rec"
@@ -570,11 +570,34 @@ test_kimi_does_not_answer_project_mcp_trust() {
     "$CASE_DIR" "$HOME_DIR" "$PROJ_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id")
   rc=$?
   [ "$rc" -ne 0 ] || fail "Kimi project-MCP trust prompt was answered automatically"
-  assert_contains "$out" "kimi did not show a verified ready signal" \
-    "Kimi trust prompt did not remain behind the readiness gate"
+  assert_contains "$out" "blocked: Kimi is waiting for human folder trust" \
+    "Kimi trust prompt did not report its registered blocked state"
   assert_absent "$CASE_DIR/kimi.trust-accepted" \
     "Kimi accepted repository-controlled project MCP servers"
-  pass "fm-spawn: Kimi leaves project MCP trust to the captain"
+  [ ! -s "$CASE_DIR/pointer.log" ] \
+    || fail "Kimi received its brief pointer before folder trust was decided"
+  assert_not_contains "$(cat "$CASE_DIR/tmux-calls.log")" "kill-window" \
+    "Kimi trust-pending endpoint was torn down"
+  state=$(cat "$CASE_DIR/kimi.state")
+  [ "$state" = trust ] || fail "Kimi trust-pending process was not left alive at its prompt"
+  meta=$(cat "$HOME_DIR/state/$id.meta")
+  assert_contains "$meta" "window=" "Kimi trust-pending metadata omitted its endpoint"
+  assert_contains "$meta" "worktree=$WT_DIR" "Kimi trust-pending metadata omitted its worktree"
+  assert_contains "$meta" "delivery=unconfirmed" "Kimi trust-pending metadata omitted delivery state"
+  assert_contains "$meta" "trust=pending" "Kimi trust-pending metadata omitted trust state"
+  assert_contains "$(cat "$HOME_DIR/state/$id.status")" \
+    "blocked: Kimi is waiting for human folder trust" \
+    "Kimi trust-pending status was not appended"
+  crew_state=$(HOME="$HOME_DIR" FM_ROOT_OVERRIDE="$ROOT" FM_HOME="$HOME_DIR" \
+    FM_STATE_OVERRIDE="$HOME_DIR/state" TMUX="fake,1,0" \
+    FM_FAKE_PANE_PATH="$WT_DIR" FM_FAKE_KIMI_STATE="$CASE_DIR/kimi.state" \
+    FM_FAKE_TMUX_CALL_LOG="$CASE_DIR/tmux-calls.log" \
+    PATH="$FAKEBIN_DIR:$BASE_PATH" "$ROOT/bin/fm-crew-state.sh" "$id")
+  assert_not_contains "$crew_state" "no metadata" \
+    "Kimi trust-pending metadata was not consumable by fm-crew-state"
+  assert_not_contains "$crew_state" "worktree gone" \
+    "fm-crew-state lost the worktree from Kimi trust-pending metadata"
+  pass "fm-spawn: Kimi registers pending folder trust without answering it"
 }
 
 test_kimi_retries_late_rendered_pointer_without_retyping() {

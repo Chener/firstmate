@@ -206,7 +206,7 @@ Herdr's Claude idle-native submit confirmation is pinned by `tests/fm-backend-he
 
 Kimi Code 0.41.0 was verified on 2026-09-09 with the real interactive TUI in an isolated tmux session.
 A repository containing project-level MCP configuration rendered `Trust this folder?` with `Trust this folder` selected.
-This security-sensitive choice remains captain-owned and is not submitted by `fm-spawn`.
+This security-sensitive choice remains captain-owned and is not submitted by `fm-spawn`; the recognized prompt instead leaves the process alive, publishes its endpoint and worktree with `delivery=unconfirmed` and `trust=pending`, and records the task as blocked for human trust.
 Typing the brief pointer and sending Enter immediately left the pointer pending at `context: 0%`; one additional Enter, without retyping, allocated a `session_` id, cleared the composer, and rendered the `✨` echo.
 The smallest counterfactual also succeeded: waiting three seconds after typing made the pointer visibly pending before the first Enter, which then allocated the session and cleared the composer while context was still zero.
 

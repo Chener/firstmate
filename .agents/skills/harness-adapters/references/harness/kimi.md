@@ -14,7 +14,7 @@ Verified on 2026-09-09 with Kimi Code CLI 0.41.0 and 0.42.0.
 | Interrupt | Single Escape, which prints `Interrupted by user`. |
 | Skill invocation | `/<skill>`, for example `/no-mistakes`; Firstmate skills are discovered. |
 | Autonomy | `--auto`; `-y` and `--yolo` are weaker and are not used. |
-| Trust dialog | A repository with project-level MCP configuration prompts on first launch; Firstmate leaves this security-sensitive choice to the captain. |
+| Trust dialog | A repository with project-level MCP configuration prompts on first launch; Firstmate leaves this security-sensitive choice to the captain and registers the live task as trust-pending. |
 | Slash submission | Pointer text can render after the first Enter and remain pending; retry Enter only, without retyping, until the submission postcondition holds. |
 | Environment marker | None; detection uses process ancestry command name `kimi`. |
 | Composer | Bordered box with a bare `>` prompt glyph and no observed ghost or placeholder text. |
@@ -22,7 +22,7 @@ Verified on 2026-09-09 with Kimi Code CLI 0.41.0 and 0.42.0.
 
 ## Readiness-gated start
 
-`../../../bin/fm-spawn.sh` launches Kimi bare, waits for the composer box or `Welcome to Kimi Code!`, sends only `Read the brief at <absolute-path> and follow it exactly.`, and requires a cleared composer plus an allocated `session_` id, the echoed `✨` submission, or nonzero context before accepting delivery.
+`../../../bin/fm-spawn.sh` launches Kimi bare, preserves and registers a recognized folder-trust prompt for the captain, waits for the composer box or `Welcome to Kimi Code!`, sends only `Read the brief at <absolute-path> and follow it exactly.`, and requires a cleared composer plus an allocated `session_` id, the echoed `✨` submission, or nonzero context before accepting delivery.
 This launch-then-send shape is mandatory because Kimi rejects positional instructions as an unknown command.
 The path must be absolute because the instructions live outside the task worktree and Kimi reads them there without `--add-dir`.
 
