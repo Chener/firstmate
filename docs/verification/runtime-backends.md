@@ -205,7 +205,8 @@ Herdr's Claude idle-native submit confirmation is pinned by `tests/fm-backend-he
 ### Kimi 0.41.0 startup signals
 
 Kimi Code 0.41.0 was verified on 2026-09-09 with the real interactive TUI in an isolated tmux session.
-A repository containing project-level MCP configuration rendered `Trust this folder?` with `Trust this folder` selected, and one Enter reached the normal empty composer.
+A repository containing project-level MCP configuration rendered `Trust this folder?` with `Trust this folder` selected.
+This security-sensitive choice remains captain-owned and is not submitted by `fm-spawn`.
 Typing the brief pointer and sending Enter immediately left the pointer pending at `context: 0%`; one additional Enter, without retyping, allocated a `session_` id, cleared the composer, and rendered the `✨` echo.
 The smallest counterfactual also succeeded: waiting three seconds after typing made the pointer visibly pending before the first Enter, which then allocated the session and cleared the composer while context was still zero.
 
@@ -215,12 +216,12 @@ FM_KIMI_SIGNALS_LIVE=1 bin/fm-test-run.sh tests/fm-kimi-signals-live-e2e.test.sh
 ```
 
 The installed binary self-updated between the manual 0.41.0 reproduction and the checked-in guard run.
-The guard reproduced the project-MCP trust gate, pending-pointer retry, session allocation, and pointer echo against 0.42.0; the manual 0.41.0 counterfactual above is the evidence that session allocation can precede context growth.
+After accepting trust only for its isolated `/usr/bin/true` MCP fixture, the guard reproduced pending-pointer retry, session allocation, and pointer echo against 0.42.0; the manual 0.41.0 counterfactual above is the evidence that session allocation can precede context growth.
 Observed bounded output:
 
 ```text
 0.41.0
-ok - real Kimi 0.42.0 answers project MCP trust, retries pending input without retyping, and exposes an allocated session before context growth
+ok - real Kimi 0.42.0 retries pending input without retyping and exposes an allocated session before context growth after controlled fixture trust
 ```
 
 The portable classifier and launch regressions remain in `tests/fm-kimi-harness.test.sh`.

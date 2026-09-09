@@ -69,9 +69,9 @@ for _ in $(seq 1 40); do
   sleep 0.25
 done
 printf '%s\n' "$capture" | grep -Fq 'Trust this folder?' \
-  || fail_live "project-level MCP trust dialog did not appear"
+  || fail_live "controlled project-level MCP trust dialog did not appear"
 printf '%s\n' "$capture" | grep -Fq '❯ Trust this folder' \
-  || fail_live "project-level MCP trust choice was not selected"
+  || fail_live "controlled project-level MCP trust choice was not selected"
 tmux -L "$SOCKET" send-keys -t "$TARGET" Enter
 
 for _ in $(seq 1 40); do
@@ -80,7 +80,7 @@ for _ in $(seq 1 40); do
   sleep 0.25
 done
 printf '%s\n' "$capture" | grep -Fq 'context: 0% (0/256k)' \
-  || fail_live "trust acceptance did not reach Kimi's ready composer"
+  || fail_live "controlled trust setup did not reach Kimi's ready composer"
 
 pointer="Read the brief at $LAB/brief.md and follow it exactly."
 tmux -L "$SOCKET" send-keys -t "$TARGET" -l "$pointer"
@@ -121,4 +121,4 @@ printf '%s\n' "$capture" | grep -qE 'Session:[[:space:]]+session_[[:alnum:]_-]+'
 printf '%s\n' "$capture" | grep -Fq '✨ Read the brief at' \
   || fail_live "retry Enter did not echo the submitted pointer"
 
-pass "real Kimi $VERSION answers project MCP trust, retries pending input without retyping, and exposes an allocated session before context growth"
+pass "real Kimi $VERSION retries pending input without retyping and exposes an allocated session before context growth after controlled fixture trust"

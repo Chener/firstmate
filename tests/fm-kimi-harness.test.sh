@@ -115,7 +115,7 @@ case "${1:-}" in
             fi
             ;;
           trust)
-            printf 'ready\n' > "$FM_FAKE_KIMI_STATE"
+            : > "$FM_FAKE_KIMI_TRUST_ACCEPTED"
             ;;
           pointer-latent)
             if [ ! -f "$FM_FAKE_KIMI_LATENT_RENDERED" ]; then
@@ -215,6 +215,7 @@ run_spawn() {
     FM_FAKE_KIMI_ASYNC_POINTER="${FM_FAKE_KIMI_ASYNC_POINTER:-no}" \
     FM_FAKE_KIMI_SESSION_ONLY="${FM_FAKE_KIMI_SESSION_ONLY:-no}" \
     FM_FAKE_KIMI_TRUST="${FM_FAKE_KIMI_TRUST:-no}" \
+    FM_FAKE_KIMI_TRUST_ACCEPTED="$case_dir/kimi.trust-accepted" \
     FM_FAKE_TMUX_CALL_LOG="$case_dir/tmux-calls.log" \
     FM_FAKE_BRIEF_REAL="$(cd "$home/data/$id" && pwd -P)/launch-brief.md" \
     FM_KIMI_READY_POLLS=2 FM_KIMI_DELIVERY_POLLS=2 FM_KIMI_POLL_INTERVAL=0 \
@@ -560,7 +561,7 @@ test_kimi_readiness_gate_precedes_pointer() {
   pass "fm-spawn: kimi never sends the brief pointer before an observable ready signal"
 }
 
-test_kimi_answers_project_mcp_trust_before_delivery() {
+test_kimi_does_not_answer_project_mcp_trust() {
   local id rec out rc
   id=kimi-trust-z6
   rec=$(make_spawn_case trust "$id")
@@ -568,12 +569,12 @@ test_kimi_answers_project_mcp_trust_before_delivery() {
   out=$(FM_FAKE_KIMI_TRUST=yes run_spawn \
     "$CASE_DIR" "$HOME_DIR" "$PROJ_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id")
   rc=$?
-  expect_code 0 "$rc" "Kimi project-MCP trust should reach verified delivery"
-  assert_contains "$out" "spawned $id harness=kimi" \
-    "Kimi trust handling did not finish the spawn"
-  assert_present "$HOME_DIR/state/$id.meta" \
-    "Kimi trust handling did not publish task metadata"
-  pass "fm-spawn: Kimi answers its selected project-MCP trust choice before delivery"
+  [ "$rc" -ne 0 ] || fail "Kimi project-MCP trust prompt was answered automatically"
+  assert_contains "$out" "kimi did not show a verified ready signal" \
+    "Kimi trust prompt did not remain behind the readiness gate"
+  assert_absent "$CASE_DIR/kimi.trust-accepted" \
+    "Kimi accepted repository-controlled project MCP servers"
+  pass "fm-spawn: Kimi leaves project MCP trust to the captain"
 }
 
 test_kimi_retries_late_rendered_pointer_without_retyping() {
@@ -779,7 +780,7 @@ test_kimi_falls_back_to_expanded_home_binary
 test_kimi_missing_binary_refuses_before_pane_creation
 test_kimi_unconfirmed_delivery_fails_loudly
 test_kimi_readiness_gate_precedes_pointer
-test_kimi_answers_project_mcp_trust_before_delivery
+test_kimi_does_not_answer_project_mcp_trust
 test_kimi_retries_late_rendered_pointer_without_retyping
 test_kimi_session_id_confirms_delivery_before_context_growth
 test_kimi_detection_uses_ancestry_after_markers

@@ -263,8 +263,7 @@
 # Verified per-harness turn-end hooks are installed automatically where enabled; some live outside the worktree.
 # Kimi uses one surgically installed Firstmate region in $HOME/.kimi-code/config.toml,
 # a firstmate-owned global hook and registry, and a gitignored per-task pointer.
-# Its selected project-MCP trust choice is answered before readiness, and its
-# delivery wait retries Enter only when a late-rendered pointer remains pending.
+# Its delivery wait retries Enter only when a late-rendered pointer remains pending.
 # grok uses a firstmate-owned global hook under ${GROK_HOME:-$HOME/.grok}/hooks
 # plus a gitignored .fm-grok-turnend worktree pointer and a state token.
 # muse installs no hook at all - its plugin engine is off in the default build - so
@@ -2903,22 +2902,12 @@ kimi_composer_is_empty() {
   [ "$(fm_backend_composer_state "$BACKEND" "$T" "$W" 2>/dev/null)" = empty ]
 }
 
-kimi_trust_dialog_is_selected() {  # <plain-pane-capture>
-  local pane=$1
-  printf '%s\n' "$pane" | grep -Fq 'Trust this folder?' \
-    && printf '%s\n' "$pane" | grep -Fq 'Project-level MCP servers are disabled' \
-    && printf '%s\n' "$pane" | grep -Fq '❯ Trust this folder'
-}
-
 kimi_wait_for_ready() {
-  local pane i=0 max=${FM_KIMI_READY_POLLS:-60} interval=${FM_KIMI_POLL_INTERVAL:-0.5} trust_answered=0
+  local pane i=0 max=${FM_KIMI_READY_POLLS:-60} interval=${FM_KIMI_POLL_INTERVAL:-0.5}
   while [ "$i" -lt "$max" ]; do
     pane=$(kimi_capture)
-    if [ "$trust_answered" -eq 0 ] && kimi_trust_dialog_is_selected "$pane"; then
-      spawn_send_key "$T" Enter || return 1
-      trust_answered=1
-    elif printf '%s\n' "$pane" | grep -Fq 'Welcome to Kimi Code!' \
-         || kimi_composer_is_empty; then
+    if printf '%s\n' "$pane" | grep -Fq 'Welcome to Kimi Code!' \
+       || kimi_composer_is_empty; then
       return 0
     fi
     i=$((i + 1))
