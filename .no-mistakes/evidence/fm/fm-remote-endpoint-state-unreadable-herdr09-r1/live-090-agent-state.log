@@ -1,0 +1,4 @@
+client=herdr 0.9.0
+status=true|true
+target=fm-lab-nm-live-state-10263:w1:p2
+agent_state=alive
