@@ -1,0 +1,40 @@
+$ tests/fm-afk-contract.test.sh
+ok - structural refusals name their missing part
+ok - an omitted stop uses the no-stop marker and confirms
+ok - the never-set flags listed concepts and their inflections without refusing, and never fires on unrelated names
+ok - clause fields are recorded verbatim, and no static parser judges the wording
+ok - clause fields preserve repeated spaces, tabs, newlines, and backslashes
+ok - clause ids are input ordinals across accepted and refused clauses
+ok - the read-back renders the words verbatim beside the accepted and refused lists
+ok - words preserve their final newline shape in storage and read-back
+ok - propose then confirm writes the record, announces hold-for-return only, and every read subcommand reflects it
+ok - confirmation requires a read-back, and refresh leaves the standing record untouched
+ok - a replacement archives the old mandate and keeps the session start
+ok - a failed replacement keeps the standing posture live
+ok - a failed final replacement publication rolls back its superseded archive
+ok - validation and archive refuse incomplete clause rows by name
+ok - validation and archive refuse blank decoded clause fields
+ok - validation and archive refuse blank stop and refused text
+ok - validation and archive refuse damaged words blocks
+ok - archive keys the record by its entry time, empties the posture, and is idempotent
+ok - malformed inputs and foreign record versions are refused rather than guessed
+
+$ tests/fm-afk-return.test.sh
+ok - return catch-up precedes Bearings, owns live blocker remediation, preserves evidence once, and clears idempotently
+ok - tmux and Herdr blockers require the same explicit durable reclassification before ordinary work
+ok - needs-decision remains reportable without masquerading as a firstmate-actionable blocker
+ok - AFK return re-drains published wakes until handling acknowledges
+ok - away-mode re-entry fails closed while the prior return catch-up is pending
+ok - check retries recorded terminal teardown and keeps catch-up gated until success
+ok - an unreadable superseded mandate stays required until its record validates
+ok - the retained contract epoch requires its final archive on every check
+ok - the return brief renders health, mandate, waiting, could-not-fix, handled, and cost from durable records, and the gate shrinks to what the away session could not fix
+ok - a refreshed posture keeps its original window, superseded mandate, and earlier outcomes
+ok - a malformed posture record stays live and gates return catch-up
+ok - an epochless malformed record remains required until restored valid
+ok - an unreadable outcome store gates catch-up until a successful reread
+ok - an unavailable held listing gates catch-up until a successful reread
+ok - an unreadable status stays private and gates until a successful reread
+ok - the read-only guard treats the away-posture record as active away mode without the legacy flag
+ok - the return brief leads with supervisor health and names every detected gap
+ok - a return with only the legacy away flag still renders the brief and measures the window from the flag

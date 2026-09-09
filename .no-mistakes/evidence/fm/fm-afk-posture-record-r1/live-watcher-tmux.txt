@@ -1,0 +1,13 @@
+SCENARIO: real watcher and real tmux pane while away-posture record exists
+WATCHER_STILL_RUNNING_AFTER_MULTIPLE_POLLS=yes
+/bin/bash: line 33: /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.nm-live-watch/state/.wake-queue: No such file or directory
+AWAY_WAKE_QUEUE_BYTES=0
+AWAY_WATCH_OUTPUT_BEGIN
+AWAY_WATCH_OUTPUT_END
+AWAY_TRIAGE_LOG_MATCH
+[2026-09-08T20:35:05-0700] absorbed stale (captain-held, never rechecked while the away-posture record exists): nm-afk-live-49535:hold
+[2026-09-08T20:35:08-0700] absorbed stale (captain-held, never rechecked while the away-posture record exists): nm-afk-live-49535:hold
+
+SCENARIO: after posture archive, the same overdue captain hold is rechecked
+WATCHER_EXITED_FOR_RECHECK=yes
+stale: nm-afk-live-49535:hold (captain-held 506s, awaiting the captain - verified hold transfer, rechecked on a long cadence not a wedge; answer the held decision or release the hold)

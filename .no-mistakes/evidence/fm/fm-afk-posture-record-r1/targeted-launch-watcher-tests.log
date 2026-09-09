@@ -1,0 +1,19 @@
+$ targeted launch units: propose/confirm, Pi refusal, confirmation gate, archive lifecycle
+ok - propose: the read-back lists accepted and refused clauses and writes only a proposal
+ok - confirm: records the posture, announces hold-for-return only, and launches no daemon
+ok - propose: refuses while the prior return catch-up is pending
+ok - pi: start refuses to launch the daemon and writes no state
+ok - pi: start-native refuses to prepare a daemon
+ok - pi-signed: start refuses to launch the daemon and writes no state
+ok - pi-signed: start-native refuses to prepare a daemon
+ok - daemon entry: a pending proposal cannot bypass captain confirmation
+ok - daemon entry: an explicitly confirmed record permits lifecycle preparation
+ok - stop: clears the away flag and archives the posture record under its entry time
+
+$ targeted watcher scenarios: away-held silence and condition-aware pause deadlines
+ok - a captain-held item is never rechecked while the away-posture record exists, and the recheck returns once the record is archived
+ok - a live captain-held pane is absorbed on first sight while the away-posture record exists
+ok - a delivery the captain already holds is never rechecked while the away-posture record exists
+ok - the daemon-owned one-shot never hands off a captain-held pane while the away-posture record exists
+ok - a declared wait naming a future until time is not rechecked before it, even past the flat cadence
+ok - a declared wait whose until time has passed is rechecked at once, then held to the cadence

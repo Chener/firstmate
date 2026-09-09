@@ -1,0 +1,8 @@
+SCENARIO: away posture honors a future declared clearing time past the flat cadence
+FUTURE_WAIT_WATCHER_STILL_RUNNING=yes
+FUTURE_WAIT_WAKE_QUEUED=no
+[2026-09-08T20:35:32-0700] absorbed stale (paused until 57s from now, declared time not reached): nm-until-live-74355:wait
+
+SCENARIO: attended posture rechecks immediately once the declared clearing time passes
+PAST_WAIT_RECHECK_EXITED=yes
+stale: nm-until-live-74355:wait (paused 65s, awaiting external - the declared clearing time has passed, rechecked on a long cadence not a wedge; confirm the wait cleared)

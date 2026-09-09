@@ -1,0 +1,52 @@
+SCENARIO: return sees a symlink status and fails closed without rendering target contents
+fm-afk-launch: away-posture record archived at /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.nm-live-symlink/state/afk-contracts/1788924876.afk-contract
+fm-afk-launch: away mode stopped; daemon terminal torn down, .afk cleared, and the posture record archived
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no live watcher process holds this home lock (last beat: 1s ago).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair a missing or failed watcher cycle with the Pi tool fm_watch_arm_pi, or restart Pi with -e /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.pi/extensions/fm-primary-turnend-guard.ts -e /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.pi/extensions/fm-primary-pi-watch.ts if the extensions are not loaded.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+=== Return brief (away 2026-09-09T03:34:36Z -> 2026-09-09T03:34:37Z, 1s) ===
+Supervisor health:
+  - supervision ran through the away window with no detected gap (watcher beat 0s old at return)
+  - status file unreadable: /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.nm-live-symlink/state/private.status; catch-up stays gated
+Mandate clauses:
+  your words at entry:
+    keep unreadable status private
+  (none recorded)
+Waiting on you:
+  (nothing)
+Tried and failed, or could not be fixed:
+  (nothing)
+Handled while away:
+  (no routine outcomes recorded in the store for this window)
+Cost: 0 supervision outcome(s) recorded (0 routine, 0 captain); 1 task(s) live at return.
+fm-afk-return: catch-up must finish before the captain request
+catch-up health: supervision ran through the away window with no detected gap (watcher beat 0s old at return)
+catch-up lifecycle: status file unreadable: /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.nm-live-symlink/state/private.status; catch-up stays gated
+fm-afk-return: handle each blocker now, or close it with resolved [key=...] and append a durable reclassification reason, then run bin/fm-afk-return.sh check
+RETURN_BEGIN_EXIT=3
+GATE_RETAINED=yes
+PRIVATE_PAYLOAD_LEAKED=no
+
+SCENARIO: replacing the symlink with a readable owned status allows check to clear
+WARNING: watcher still down (same stale episode; last beat: 2s ago, grace 300s) - full banner already printed this episode.
+=== Return brief (away 2026-09-09T03:34:36Z -> 2026-09-09T03:34:38Z, 2s) ===
+Supervisor health:
+  - supervision ran through the away window with no detected gap (watcher beat 0s old at return)
+Mandate clauses:
+  your words at entry:
+    keep unreadable status private
+  (none recorded)
+Waiting on you:
+  (nothing)
+Tried and failed, or could not be fixed:
+  (nothing)
+Handled while away:
+  (no routine outcomes recorded in the store for this window)
+Cost: 0 supervision outcome(s) recorded (0 routine, 0 captain); 1 task(s) live at return.
+catch-up health: supervision ran through the away window with no detected gap (watcher beat 0s old at return)
+fm-afk-return: catch-up clear; ordinary captain work may proceed
+GATE_AFTER_REPAIR=cleared

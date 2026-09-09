@@ -1,0 +1,118 @@
+SCENARIO: captain proposes away words and clauses through the product CLI
+Away posture read-back (proposed, not yet confirmed):
+  entered: 2026-09-09T03:34:22Z
+  expected return: 2026-09-09T18:00:00Z
+  spend cap: 3 concurrent workers
+  reach: hold-for-return only. No phone channel is configured; anything that needs you waits for your return.
+  your words (verbatim):
+    Captain says: keep  two spaces.
+    Second line stays verbatim.
+  accepted clauses:
+    1. merge task windows-fix PR when checks green
+    2. answer credential prompt for task q when it appears - flagged: names 'credential', a never-set concept that is never pre-authorizable; recorded, judged at execution
+  refused clauses:
+    3. "action=merge object=task missing-condition PR when=(none)" - refused: missing when - the clause states no precondition
+  everything else waits for your return: no red merge without its named check, no discard without a named object and condition, never credentials, legal, financial, or attended prompts, nothing by analogy, and every clause expires at return.
+  hard rule: forbidden, destructive, irreversible, and security-sensitive actions are never pre-authorizable regardless of clause text; no recorded clause is authority by itself.
+  recorded clauses are held for the return brief and are not executed by this release.
+Say go to confirm; restate any refused clause first if you want it recorded.
+PROPOSE_EXIT=3
+
+SCENARIO: captain confirms and receives the entry announcement
+Away posture confirmed at 2026-09-09T03:34:22Z: hold-for-return only. No phone channel is configured; anything that needs you waits for your return. 2 mandate clause(s) recorded, 1 refused, and 1 flagged as naming a never-set concept; recorded clauses are held for the return brief and are not executed by this release; forbidden, destructive, irreversible, and security-sensitive actions are never pre-authorizable regardless of clause text, and no recorded clause is authority by itself. Expected return: 2026-09-09T18:00:00Z. Spend cap: 3 concurrent workers.
+CONFIRMED_RECORD=yes
+LEGACY_AFK_FLAG=absent
+PERSISTED_WORDS_BEGIN
+Captain says: keep  two spaces.
+Second line stays verbatim.
+PERSISTED_WORDS_END
+PERSISTED_CLAUSES_TSV
+1	merge	task windows-fix PR	checks green	-
+2	answer	credential prompt for task q	it appears	-
+PERSISTED_FLAGS_TSV
+2	credential
+PERSISTED_REFUSED_TSV
+3	action=merge object=task missing-condition PR when=(none)	when - the clause states no precondition
+
+SCENARIO: Pi rejects daemon launch while retaining the confirmed posture
+fm-afk-launch: the away daemon is no longer launched on pi; the away-posture record is the posture there (run bin/fm-afk-launch.sh confirm and stop)
+PI_START_EXIT=1
+DAEMON_TERMINAL_RECORD=absent
+
+SCENARIO: seed real durable outcome, held backlog, decision, failure, and blockers
+fm-afk-launch: away-posture record archived at /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.nm-live-afk/state/afk-contracts/1788924862.afk-contract
+fm-afk-launch: away mode stopped; daemon terminal torn down, .afk cleared, and the posture record archived
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  2 task(s) in flight, but no live watcher process holds this home lock (last beat: 2s ago).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair a missing or failed watcher cycle with the Pi tool fm_watch_arm_pi, or restart Pi with -e /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.pi/extensions/fm-primary-turnend-guard.ts -e /Users/kunchen/.no-mistakes/worktrees/52b07e9083e7/01M2210XXJMT2YJ9X1Q89Z84GT/.pi/extensions/fm-primary-pi-watch.ts if the extensions are not loaded.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+=== Return brief (away 2026-09-09T03:34:22Z -> 2026-09-09T03:34:24Z, 2s) ===
+Supervisor health:
+  - supervision ran through the away window with no detected gap (watcher beat 1s old at return)
+Mandate clauses:
+  - 1. merge task windows-fix PR when checks green - recorded, not executed by this release
+  - 2. answer credential prompt for task q when it appears - flagged: names 'credential', a never-set concept that is never pre-authorizable - recorded, not executed by this release
+  - 3. "action=merge object=task missing-condition PR when=(none)" - refused at entry: missing when - the clause states no precondition
+  your words at entry:
+    Captain says: keep  two spaces.
+    Second line stays verbatim.
+Waiting on you:
+  held in the backlog:
+    tasks[1]{id,state,kind,repo,title,hold_kind,hold_reason,hold_until}:
+      windows-fix,queued,task,"-",Fix the windows lane,captain,awaiting the captain on the merge,"-"
+  - windows-fix [key=release] needs your decision: choose the prerelease lane
+Tried and failed, or could not be fixed:
+  - windows-fix [key=token] still blocked, firstmate remediates before ordinary work: firstmate must refresh the build token
+  - failed-task: failed: reproduction did not compile
+Handled while away:
+  1 routine outcome(s) recorded; the latest:
+    - handled-task: resent the steer; worker resumed
+Cost: 1 supervision outcome(s) recorded (1 routine, 0 captain); 2 task(s) live at return.
+fm-afk-return: catch-up must finish before the captain request
+catch-up health: supervision ran through the away window with no detected gap (watcher beat 1s old at return)
+catch-up wake: STATUS OUTCOME BACKSTOP (newest captain-facing task event has no covering branch outcome):
+catch-up wake: failed-task failed: reproduction did not compile
+catch-up wake: OPEN DECISIONS (still open, folded from the durable status logs - not just the latest line):
+catch-up wake: windows-fix [key=token] blocked: firstmate must refresh the build token
+catch-up wake: windows-fix [key=release] needs-decision: choose the prerelease lane
+catch-up wake: OPEN DECISIONS: close one by answering it: bin/fm-send.sh <task> --resolve-key <key> '<answer>'
+firstmate-actionable blocker: windows-fix [key=token] firstmate must refresh the build token
+fm-afk-return: handle each blocker now, or close it with resolved [key=...] and append a durable reclassification reason, then run bin/fm-afk-return.sh check
+RETURN_BEGIN_EXIT=3
+RETURN_GATE=retained
+LIVE_RECORD=archived
+
+SCENARIO: repaired blockers shrink the gate and clear catch-up
+WARNING: watcher still down (same stale episode; last beat: 3s ago, grace 300s) - full banner already printed this episode.
+=== Return brief (away 2026-09-09T03:34:22Z -> 2026-09-09T03:34:25Z, 3s) ===
+Supervisor health:
+  - supervision ran through the away window with no detected gap (watcher beat 1s old at return)
+Mandate clauses:
+  - 1. merge task windows-fix PR when checks green - recorded, not executed by this release
+  - 2. answer credential prompt for task q when it appears - flagged: names 'credential', a never-set concept that is never pre-authorizable - recorded, not executed by this release
+  - 3. "action=merge object=task missing-condition PR when=(none)" - refused at entry: missing when - the clause states no precondition
+  your words at entry:
+    Captain says: keep  two spaces.
+    Second line stays verbatim.
+Waiting on you:
+  held in the backlog:
+    tasks[1]{id,state,kind,repo,title,hold_kind,hold_reason,hold_until}:
+      windows-fix,queued,task,"-",Fix the windows lane,captain,awaiting the captain on the merge,"-"
+Tried and failed, or could not be fixed:
+  - failed-task: failed: reproduction did not compile
+Handled while away:
+  1 routine outcome(s) recorded; the latest:
+    - handled-task: resent the steer; worker resumed
+Cost: 1 supervision outcome(s) recorded (1 routine, 0 captain); 2 task(s) live at return.
+catch-up health: supervision ran through the away window with no detected gap (watcher beat 1s old at return)
+catch-up wake: STATUS OUTCOME BACKSTOP (newest captain-facing task event has no covering branch outcome):
+catch-up wake: failed-task failed: reproduction did not compile
+catch-up wake: OPEN DECISIONS (still open, folded from the durable status logs - not just the latest line):
+catch-up wake: windows-fix [key=token] blocked: firstmate must refresh the build token
+catch-up wake: windows-fix [key=release] needs-decision: choose the prerelease lane
+catch-up wake: OPEN DECISIONS: close one by answering it: bin/fm-send.sh <task> --resolve-key <key> '<answer>'
+fm-afk-return: catch-up clear; ordinary captain work may proceed
+RETURN_GATE_AFTER_CHECK=cleared
