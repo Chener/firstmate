@@ -67,7 +67,7 @@ fake_screen() {
 }
 fake_cursor_y() {
   case "$state" in
-    pointer-typed) printf '3\n' ;;
+    pointer-typed|pointer-latent) printf '3\n' ;;
     ready|delivered|delivered-session|trust) printf '3\n' ;;
     *) printf '1\n' ;;
   esac
@@ -117,7 +117,15 @@ case "${1:-}" in
           trust)
             printf 'ready\n' > "$FM_FAKE_KIMI_STATE"
             ;;
-          pointer-typed|pointer-latent)
+          pointer-latent)
+            if [ ! -f "$FM_FAKE_KIMI_LATENT_RENDERED" ]; then
+              : > "$FM_FAKE_KIMI_LATENT_EARLY_ENTER"
+            elif [ "${FM_FAKE_KIMI_DELIVERY:-yes}" = yes ]; then
+              printf 'recovery\n' >> "$FM_FAKE_KIMI_LATENT_RECOVERY_ENTER"
+              printf 'delivered\n' > "$FM_FAKE_KIMI_STATE"
+            fi
+            ;;
+          pointer-typed)
             if [ "${FM_FAKE_KIMI_DELIVERY:-yes}" = yes ]; then
               if [ "${FM_FAKE_KIMI_SWALLOW_FIRST:-no}" = yes ] \
                  && [ ! -f "$FM_FAKE_KIMI_SWALLOWED" ]; then
@@ -201,6 +209,8 @@ run_spawn() {
     FM_FAKE_KIMI_STATE="$case_dir/kimi.state" \
     FM_FAKE_KIMI_SWALLOWED="$case_dir/kimi.swallowed" \
     FM_FAKE_KIMI_LATENT_RENDERED="$case_dir/kimi.latent-rendered" \
+    FM_FAKE_KIMI_LATENT_EARLY_ENTER="$case_dir/kimi.latent-early-enter" \
+    FM_FAKE_KIMI_LATENT_RECOVERY_ENTER="$case_dir/kimi.latent-recovery-enter" \
     FM_FAKE_KIMI_SWALLOW_FIRST="${FM_FAKE_KIMI_SWALLOW_FIRST:-no}" \
     FM_FAKE_KIMI_ASYNC_POINTER="${FM_FAKE_KIMI_ASYNC_POINTER:-no}" \
     FM_FAKE_KIMI_SESSION_ONLY="${FM_FAKE_KIMI_SESSION_ONLY:-no}" \
@@ -567,7 +577,7 @@ test_kimi_answers_project_mcp_trust_before_delivery() {
 }
 
 test_kimi_retries_late_rendered_pointer_without_retyping() {
-  local id rec out rc sends enters
+  local id rec out rc sends recovery_enters
   id=kimi-async-pointer-z7
   rec=$(make_spawn_case async-pointer "$id")
   read_spawn_record "$rec"
@@ -577,8 +587,11 @@ test_kimi_retries_late_rendered_pointer_without_retyping() {
   expect_code 0 "$rc" "Kimi late-rendered pointer should be resubmitted with Enter"
   sends=$(wc -l < "$CASE_DIR/pointer.log" | tr -d '[:space:]')
   [ "$sends" = 1 ] || fail "Kimi late-render retry retyped the pointer $sends times"
-  enters=$(grep -c 'send-keys.* Enter' "$CASE_DIR/tmux-calls.log" || true)
-  [ "$enters" -ge 3 ] || fail "Kimi late-render retry did not send the additional Enter"
+  assert_present "$CASE_DIR/kimi.latent-early-enter" \
+    "Kimi late-render fake did not swallow the pre-render submit Enter"
+  recovery_enters=$(wc -l < "$CASE_DIR/kimi.latent-recovery-enter" | tr -d '[:space:]')
+  [ "$recovery_enters" = 1 ] \
+    || fail "Kimi late-render retry sent $recovery_enters recovery-specific Enters"
   assert_present "$HOME_DIR/state/$id.meta" \
     "Kimi late-render retry did not publish task metadata"
   pass "fm-spawn: Kimi retries Enter after late pointer rendering without retyping"

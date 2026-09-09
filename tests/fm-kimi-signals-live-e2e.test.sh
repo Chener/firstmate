@@ -4,6 +4,8 @@ set -u
 
 # shellcheck source=tests/lib.sh
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+# shellcheck source=bin/fm-composer-lib.sh
+. "$ROOT/bin/fm-composer-lib.sh"
 
 fm_live_gate opt-in FM_KIMI_SIGNALS_LIVE kimi tmux git
 
@@ -17,6 +19,16 @@ VERSION=$(kimi --version 2>&1 | head -1)
 
 fail_live() {
   fail "real Kimi $VERSION: $1"
+}
+
+live_kimi_composer_state() {
+  local pane cursor
+  pane=$(tmux -L "$SOCKET" capture-pane -e -p -t "$TARGET" -S 0 -E - 2>/dev/null) \
+    || { printf 'unknown'; return 0; }
+  cursor=$(tmux -L "$SOCKET" display-message -p -t "$TARGET" '#{cursor_y}' 2>/dev/null) \
+    || { printf 'unknown'; return 0; }
+  fm_composer_classify_screen \
+    $'styled=1\ncursor=1\nidentity=1\nrows=0' "$pane" "$cursor"
 }
 
 cleanup_kimi_signals_live() {
@@ -77,8 +89,10 @@ tmux -L "$SOCKET" send-keys -t "$TARGET" Enter
 pending=0
 for _ in $(seq 1 20); do
   capture=$(tmux -L "$SOCKET" capture-pane -p -t "$TARGET" -S -80 2>/dev/null || true)
-  if printf '%s\n' "$capture" | grep -Fq 'Read the brief at' \
-     && printf '%s\n' "$capture" | grep -Fq 'context: 0% (0/256k)'; then
+  if [ "$(live_kimi_composer_state)" = pending ] \
+     && printf '%s\n' "$capture" | grep -Fq 'Read the brief at' \
+     && ! printf '%s\n' "$capture" | grep -qE 'Session:[[:space:]]+session_[[:alnum:]_-]+' \
+     && ! printf '%s\n' "$capture" | grep -Fq '✨ Read the brief at'; then
     pending=1
     break
   fi
