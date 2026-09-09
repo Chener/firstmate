@@ -1,0 +1,8 @@
+scenario=protocol-mismatch-recovery
+session=fm-lab-mismatch-recover-63406-32212 pane=w1:p1
+path_first_version=herdr 0.8.2
+old_client_status={"client":{"version":"0.8.2","protocol":20},"server":{"running":true,"version":"0.9.0","protocol":22,"compatible":false}}
+direct_old_client_rc=1
+direct_old_client_error={"id":"cli:pane:get","error":{"code":"protocol_mismatch","message":"client protocol 20 is older than server protocol 22; upgrade the Herdr client before using this command"}}
+adapter_state=alive
+result=PASS: real 0.8.2 client refusal was bypassed to the real compatible 0.9.0 client

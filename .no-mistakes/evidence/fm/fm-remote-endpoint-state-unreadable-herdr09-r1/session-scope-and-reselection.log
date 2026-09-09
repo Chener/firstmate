@@ -1,0 +1,8 @@
+scenario=session-scope-and-forced-reselection
+modern_session=fm-lab-scope-modern-95810-5285 modern_pane=w1:p1 legacy_session=fm-lab-scope-legacy-95838-18005 legacy_pane=w1:p1
+modern_pane_read=w1:p1 selected_version=herdr 0.9.0
+selected_session=fm-lab-scope-modern-95810-5285
+other_session_path_default_client=0.8.2 server=0.8.2 compatible=true
+changed_server_selected_client=0.9.0 server=0.8.2 compatible=false
+post_change_pane_id=w1:p1 selected_after_retry=PATH-default
+result=PASS: cached 0.9.0 stayed scoped to its session and a changed server forced retry through PATH-default 0.8.2

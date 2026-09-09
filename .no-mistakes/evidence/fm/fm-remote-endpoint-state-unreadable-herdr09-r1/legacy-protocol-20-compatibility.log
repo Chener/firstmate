@@ -1,0 +1,6 @@
+scenario=legacy-protocol-20-compatibility
+session=fm-lab-legacy-compatibl-78954-7572 pane=w1:p1
+path_first_version=herdr 0.8.2
+legacy_server_status={"client":{"version":"0.8.2","protocol":20},"server":{"running":true,"version":"0.8.2","protocol":20,"compatible":true}}
+adapter_state_and_selection=alive|selected=PATH-default
+result=PASS: real 0.8.2 protocol-20 endpoint stayed readable without fallback selection
