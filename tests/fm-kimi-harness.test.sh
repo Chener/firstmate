@@ -37,14 +37,28 @@ printf '%s\n' "$*" >> "$FM_FAKE_TMUX_CALL_LOG"
 state=$(cat "$FM_FAKE_KIMI_STATE" 2>/dev/null || true)
 fake_screen() {
   case "$state" in
+    trust)
+      printf 'Trust this folder?\nProject-level MCP servers are disabled until you explicitly choose Trust.\n❯ Trust this folder\n  Don'"'"'t trust\n'
+      ;;
     ready)
       printf 'Welcome to Kimi Code!\ncontext: 0%% (0/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n'
+      ;;
+    pointer-latent)
+      if [ -f "$FM_FAKE_KIMI_LATENT_RENDERED" ]; then
+        printf 'context: 0%% (0/256k)\n╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\n'
+      else
+        : > "$FM_FAKE_KIMI_LATENT_RENDERED"
+        printf 'context: 0%% (0/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n'
+      fi
       ;;
     pointer-typed)
       printf 'context: 0%% (0/256k)\n╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\n'
       ;;
     delivered)
       printf '✨ Read the brief at %s and follow it exactly.\ncontext: 1%% (2k/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n' "$FM_FAKE_BRIEF_REAL"
+      ;;
+    delivered-session)
+      printf 'Session:   session_01234567-89ab-cdef-0123-456789abcdef\ncontext: 0%% (0/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n'
       ;;
     *)
       printf 'shell starting\n$ \n'
@@ -54,7 +68,7 @@ fake_screen() {
 fake_cursor_y() {
   case "$state" in
     pointer-typed) printf '3\n' ;;
-    ready|delivered) printf '3\n' ;;
+    ready|delivered|delivered-session|trust) printf '3\n' ;;
     *) printf '1\n' ;;
   esac
 }
@@ -81,7 +95,11 @@ case "${1:-}" in
           ;;
         *)
           printf '%s\n' "$literal" >> "$FM_FAKE_POINTER_LOG"
-          printf 'pointer-typed\n' > "$FM_FAKE_KIMI_STATE"
+          if [ "${FM_FAKE_KIMI_ASYNC_POINTER:-no}" = yes ]; then
+            printf 'pointer-latent\n' > "$FM_FAKE_KIMI_STATE"
+          else
+            printf 'pointer-typed\n' > "$FM_FAKE_KIMI_STATE"
+          fi
           ;;
       esac
       exit 0
@@ -90,15 +108,22 @@ case "${1:-}" in
       *' Enter '*)
         case "$state" in
           launched)
-            if [ "${FM_FAKE_KIMI_READY:-yes}" = yes ]; then
+            if [ "${FM_FAKE_KIMI_TRUST:-no}" = yes ]; then
+              printf 'trust\n' > "$FM_FAKE_KIMI_STATE"
+            elif [ "${FM_FAKE_KIMI_READY:-yes}" = yes ]; then
               printf 'ready\n' > "$FM_FAKE_KIMI_STATE"
             fi
             ;;
-          pointer-typed)
+          trust)
+            printf 'ready\n' > "$FM_FAKE_KIMI_STATE"
+            ;;
+          pointer-typed|pointer-latent)
             if [ "${FM_FAKE_KIMI_DELIVERY:-yes}" = yes ]; then
               if [ "${FM_FAKE_KIMI_SWALLOW_FIRST:-no}" = yes ] \
                  && [ ! -f "$FM_FAKE_KIMI_SWALLOWED" ]; then
                 : > "$FM_FAKE_KIMI_SWALLOWED"
+              elif [ "${FM_FAKE_KIMI_SESSION_ONLY:-no}" = yes ]; then
+                printf 'delivered-session\n' > "$FM_FAKE_KIMI_STATE"
               else
                 printf 'delivered\n' > "$FM_FAKE_KIMI_STATE"
               fi
@@ -175,7 +200,11 @@ run_spawn() {
     FM_FAKE_POINTER_LOG="$case_dir/pointer.log" \
     FM_FAKE_KIMI_STATE="$case_dir/kimi.state" \
     FM_FAKE_KIMI_SWALLOWED="$case_dir/kimi.swallowed" \
+    FM_FAKE_KIMI_LATENT_RENDERED="$case_dir/kimi.latent-rendered" \
     FM_FAKE_KIMI_SWALLOW_FIRST="${FM_FAKE_KIMI_SWALLOW_FIRST:-no}" \
+    FM_FAKE_KIMI_ASYNC_POINTER="${FM_FAKE_KIMI_ASYNC_POINTER:-no}" \
+    FM_FAKE_KIMI_SESSION_ONLY="${FM_FAKE_KIMI_SESSION_ONLY:-no}" \
+    FM_FAKE_KIMI_TRUST="${FM_FAKE_KIMI_TRUST:-no}" \
     FM_FAKE_TMUX_CALL_LOG="$case_dir/tmux-calls.log" \
     FM_FAKE_BRIEF_REAL="$(cd "$home/data/$id" && pwd -P)/launch-brief.md" \
     FM_KIMI_READY_POLLS=2 FM_KIMI_DELIVERY_POLLS=2 FM_KIMI_POLL_INTERVAL=0 \
@@ -521,6 +550,54 @@ test_kimi_readiness_gate_precedes_pointer() {
   pass "fm-spawn: kimi never sends the brief pointer before an observable ready signal"
 }
 
+test_kimi_answers_project_mcp_trust_before_delivery() {
+  local id rec out rc
+  id=kimi-trust-z6
+  rec=$(make_spawn_case trust "$id")
+  read_spawn_record "$rec"
+  out=$(FM_FAKE_KIMI_TRUST=yes run_spawn \
+    "$CASE_DIR" "$HOME_DIR" "$PROJ_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id")
+  rc=$?
+  expect_code 0 "$rc" "Kimi project-MCP trust should reach verified delivery"
+  assert_contains "$out" "spawned $id harness=kimi" \
+    "Kimi trust handling did not finish the spawn"
+  assert_present "$HOME_DIR/state/$id.meta" \
+    "Kimi trust handling did not publish task metadata"
+  pass "fm-spawn: Kimi answers its selected project-MCP trust choice before delivery"
+}
+
+test_kimi_retries_late_rendered_pointer_without_retyping() {
+  local id rec out rc sends enters
+  id=kimi-async-pointer-z7
+  rec=$(make_spawn_case async-pointer "$id")
+  read_spawn_record "$rec"
+  out=$(FM_FAKE_KIMI_ASYNC_POINTER=yes run_spawn \
+    "$CASE_DIR" "$HOME_DIR" "$PROJ_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id")
+  rc=$?
+  expect_code 0 "$rc" "Kimi late-rendered pointer should be resubmitted with Enter"
+  sends=$(wc -l < "$CASE_DIR/pointer.log" | tr -d '[:space:]')
+  [ "$sends" = 1 ] || fail "Kimi late-render retry retyped the pointer $sends times"
+  enters=$(grep -c 'send-keys.* Enter' "$CASE_DIR/tmux-calls.log" || true)
+  [ "$enters" -ge 3 ] || fail "Kimi late-render retry did not send the additional Enter"
+  assert_present "$HOME_DIR/state/$id.meta" \
+    "Kimi late-render retry did not publish task metadata"
+  pass "fm-spawn: Kimi retries Enter after late pointer rendering without retyping"
+}
+
+test_kimi_session_id_confirms_delivery_before_context_growth() {
+  local id rec out rc
+  id=kimi-session-signal-z8
+  rec=$(make_spawn_case session-signal "$id")
+  read_spawn_record "$rec"
+  out=$(FM_FAKE_KIMI_SESSION_ONLY=yes run_spawn \
+    "$CASE_DIR" "$HOME_DIR" "$PROJ_DIR" "$WT_DIR" "$FAKEBIN_DIR" "$id")
+  rc=$?
+  expect_code 0 "$rc" "Kimi allocated session should confirm delivery at zero context"
+  assert_present "$HOME_DIR/state/$id.meta" \
+    "Kimi session signal did not publish task metadata"
+  pass "fm-spawn: Kimi allocated session confirms delivery before context growth"
+}
+
 test_kimi_detection_uses_ancestry_after_markers() {
   local dir fakebin cfg out
   dir="$TMP_ROOT/detection"
@@ -689,6 +766,9 @@ test_kimi_falls_back_to_expanded_home_binary
 test_kimi_missing_binary_refuses_before_pane_creation
 test_kimi_unconfirmed_delivery_fails_loudly
 test_kimi_readiness_gate_precedes_pointer
+test_kimi_answers_project_mcp_trust_before_delivery
+test_kimi_retries_late_rendered_pointer_without_retyping
+test_kimi_session_id_confirms_delivery_before_context_growth
 test_kimi_detection_uses_ancestry_after_markers
 test_kimi_session_lock_identity
 test_kimi_busy_signature_is_scoped_to_spinner_lines

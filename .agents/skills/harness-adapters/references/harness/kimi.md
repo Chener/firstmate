@@ -1,6 +1,6 @@
 # Kimi Code
 
-Verified on 2026-07-25 with Kimi Code CLI 0.29.1.
+Verified on 2026-09-09 with Kimi Code CLI 0.41.0 and 0.42.0.
 
 ## Operating facts
 
@@ -14,23 +14,24 @@ Verified on 2026-07-25 with Kimi Code CLI 0.29.1.
 | Interrupt | Single Escape, which prints `Interrupted by user`. |
 | Skill invocation | `/<skill>`, for example `/no-mistakes`; Firstmate skills are discovered. |
 | Autonomy | `--auto`; `-y` and `--yolo` are weaker and are not used. |
-| Trust dialog | None observed on a clean first launch in a fresh pooled worktree. |
-| Slash submission | One Enter submits, with no popup swallow or settle hazard. |
+| Trust dialog | A repository with project-level MCP configuration prompts on first launch; the selected `Trust this folder` choice is submitted with Enter before readiness. |
+| Slash submission | Pointer text can render after the first Enter and remain pending; retry Enter only, without retyping, until the submission postcondition holds. |
 | Environment marker | None; detection uses process ancestry command name `kimi`. |
 | Composer | Bordered box with a bare `>` prompt glyph and no observed ghost or placeholder text. |
 | Effort | No verified reasoning-effort flag; `references/common/model-and-effort.md` owns unsupported-value handling. |
 
 ## Readiness-gated start
 
-`../../../bin/fm-spawn.sh` launches Kimi bare, waits for the composer box or `Welcome to Kimi Code!`, sends only `Read the brief at <absolute-path> and follow it exactly.`, and requires a cleared composer plus either the echoed `✨` submission or nonzero context before accepting delivery.
+`../../../bin/fm-spawn.sh` launches Kimi bare, answers the selected project-MCP `Trust this folder` gate with Enter when present, waits for the composer box or `Welcome to Kimi Code!`, sends only `Read the brief at <absolute-path> and follow it exactly.`, and requires a cleared composer plus an allocated `session_` id, the echoed `✨` submission, or nonzero context before accepting delivery.
 This launch-then-send shape is mandatory because Kimi rejects positional instructions as an unknown command.
 The path must be absolute because the instructions live outside the task worktree and Kimi reads them there without `--add-dir`.
 
 Sending before readiness was reproduced as a silent drop with zero exit status, an empty composer, `context: 0%`, no echoed user message, and a healthy-looking idle pane.
 The startup input-readiness window is the established cause; the banner is not.
-An early Enter can expand the composer to multiple content rows, leaving pointer text on the first row and the cursor on an empty later row.
+On Kimi 0.41.0, literal input can finish rendering after an immediate Enter, leaving the pointer pending even though the composer briefly looked empty.
+An early Enter can also expand the composer to multiple content rows, leaving pointer text on the first row and the cursor on an empty later row.
 The shared tmux reader therefore locates the complete bordered composer and treats real text on any content row as positive evidence that submission remains pending.
-No rendering signal proves Kimi will accept input during this window, so delivery retries Enter through the shared submit core and retains the postcondition verification rather than relaxing readiness.
+The Kimi delivery wait retries Enter when that structural pending verdict appears, without ever retyping the pointer, and accepts the allocated session id as the earliest positive submission signal when context remains at zero.
 
 Observed spinner captures had optional leading whitespace, a moon-phase glyph, whitespace around `·`, and rotating tip text, including during tool execution.
 The delivery-only matcher requires the observed whitespace, deliberately excludes the unobserved zero-whitespace form, and does not require trailing tip text.

@@ -202,6 +202,28 @@ The current classifier matrix and its refresh guard are recorded in [Composer cl
 Kimi pointer delivery and OpenCode 1.18.4 busy-queue behavior remain pinned by `tests/fm-kimi-harness.test.sh`, `tests/fm-tmux-submit-busy.test.sh`, and `tests/fm-composer-lib.test.sh`.
 Herdr's Claude idle-native submit confirmation is pinned by `tests/fm-backend-herdr.test.sh` and refreshed by `FM_HERDR_SUBMIT_CONFIRM_LIVE=1 tests/fm-herdr-submit-confirm-live-e2e.test.sh`.
 
+### Kimi 0.41.0 startup signals
+
+Kimi Code 0.41.0 was verified on 2026-09-09 with the real interactive TUI in an isolated tmux session.
+A repository containing project-level MCP configuration rendered `Trust this folder?` with `Trust this folder` selected, and one Enter reached the normal empty composer.
+Typing the brief pointer and sending Enter immediately left the pointer pending at `context: 0%`; one additional Enter, without retyping, allocated a `session_` id, cleared the composer, and rendered the `✨` echo.
+The smallest counterfactual also succeeded: waiting three seconds after typing made the pointer visibly pending before the first Enter, which then allocated the session and cleared the composer while context was still zero.
+
+```sh
+kimi --version
+FM_KIMI_SIGNALS_LIVE=1 bin/fm-test-run.sh tests/fm-kimi-signals-live-e2e.test.sh
+```
+
+The installed binary self-updated between the manual 0.41.0 reproduction and the checked-in guard run, so the guard also proved the same signals against 0.42.0.
+Observed bounded output:
+
+```text
+0.41.0
+ok - real Kimi 0.42.0 answers project MCP trust, retries pending input without retyping, and exposes an allocated session before context growth
+```
+
+The portable classifier and launch regressions remain in `tests/fm-kimi-harness.test.sh`.
+
 ### Cleanup endpoint identity
 
 The cleanup identity boundary was validated on 2026-07-28 with tmux 3.6a and metadata fixtures for every supported backend.
