@@ -214,7 +214,8 @@ kimi --version
 FM_KIMI_SIGNALS_LIVE=1 bin/fm-test-run.sh tests/fm-kimi-signals-live-e2e.test.sh
 ```
 
-The installed binary self-updated between the manual 0.41.0 reproduction and the checked-in guard run, so the guard also proved the same signals against 0.42.0.
+The installed binary self-updated between the manual 0.41.0 reproduction and the checked-in guard run.
+The guard reproduced the project-MCP trust gate, pending-pointer retry, session allocation, and pointer echo against 0.42.0; the manual 0.41.0 counterfactual above is the evidence that session allocation can precede context growth.
 Observed bounded output:
 
 ```text
