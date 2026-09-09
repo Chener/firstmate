@@ -45,7 +45,7 @@ printf '%s\n' \
   '  }' \
   '}' > "$LAB/.kimi/mcp.json"
 printf '%s\n' '# Live Kimi probe' '' \
-  'Reply with exactly `KIMI_PROBE_OK` and do not use tools.' > "$LAB/brief.md"
+  "Reply with exactly \`KIMI_PROBE_OK\` and do not use tools." > "$LAB/brief.md"
 
 tmux -L "$SOCKET" new-session -d -s "$SESSION" -n probe -c "$LAB" \
   "env HOME='$KIMI_HOME' '$(command -v kimi)' --auto"
