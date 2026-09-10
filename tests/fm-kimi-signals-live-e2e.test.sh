@@ -100,7 +100,7 @@ for _ in $(seq 1 20); do
 done
 [ "$pending" -eq 1 ] || fail_live "immediate Enter did not reproduce a pending pointer"
 
-for attempt in $(seq 1 3); do
+for _ in $(seq 1 3); do
   tmux -L "$SOCKET" send-keys -t "$TARGET" Enter
   for _ in $(seq 1 20); do
     capture=$(tmux -L "$SOCKET" capture-pane -p -t "$TARGET" -S -100 2>/dev/null || true)
