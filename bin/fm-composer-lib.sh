@@ -480,6 +480,12 @@ fm_composer_strip_braille() {
   '
 }
 
+# Kimi 0.4x draws its status footer directly below the bordered composer.
+# These anchored forms cover the captured permission-mode and context rows
+# without treating arbitrary activity below another harness's stale box as
+# footer furniture.
+FM_COMPOSER_KIMI_STATUS_RE_DEFAULT='^[[:space:]]*(Never Ask|Ask When Needed|Plan)([[:space:]]|$).*(thinking:|ctrl\+o[[:space:]]+expand|No session yet)|^[[:space:]]*context:[[:space:]]*[0-9]+%[[:space:]]*\([^)]*\)([[:space:]]|$)'
+
 # The bounded row window adapters should capture for a composer read. One
 # shared policy (previously three per-backend variables that had drifted to
 # 20/20/200): the composer is bottom-anchored, so a small tail window is
@@ -1072,6 +1078,12 @@ _fm_composer_row_is_omp_status() {  # <trimmed-row>
   fm_composer_idle_matches "$1" "${FM_COMPOSER_OMP_STATUS_RE:-$FM_COMPOSER_OMP_STATUS_RE_DEFAULT}" sensitive
 }
 
+# _fm_composer_row_is_kimi_status: 0 when the trimmed row is Kimi's status
+# footer (FM_COMPOSER_KIMI_STATUS_RE_DEFAULT above) below a bordered composer.
+_fm_composer_row_is_kimi_status() {  # <trimmed-row>
+  fm_composer_idle_matches "$1" "${FM_COMPOSER_KIMI_STATUS_RE:-$FM_COMPOSER_KIMI_STATUS_RE_DEFAULT}" sensitive
+}
+
 # _fm_composer_row_is_braille_furniture: 0 when the row is non-blank and its
 # non-whitespace content is entirely braille cells (fm_composer_strip_braille
 # above) - an animation row that never counts as typed content and bounds a
@@ -1279,7 +1291,10 @@ _fm_composer_select_cursorless() {
     raw=$(_fm_composer_screen_row "$next" "$plain")
     trimmed=$raw
     fm_composer_normalize_trim_var trimmed
-    if [ -n "$trimmed" ] && ! fm_composer_row_has_edge "$trimmed"; then
+    if [ -n "$trimmed" ] \
+       && ! fm_composer_row_has_edge "$trimmed" \
+       && ! { [ "$FM_COMPOSER_SELECTED_KIND" = box ] \
+              && _fm_composer_row_is_kimi_status "$trimmed"; }; then
       FM_COMPOSER_SELECTED_KIND=
       return 1
     fi
