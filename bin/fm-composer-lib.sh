@@ -1113,6 +1113,12 @@ _fm_composer_bare_row_strip_furniture_var() {  # <varname>
   fi
 }
 
+# _fm_composer_row_is_kimi_status: 0 when the trimmed row is Kimi's status
+# footer (FM_COMPOSER_KIMI_STATUS_RE_DEFAULT above) below a bordered composer.
+_fm_composer_row_is_kimi_status() {  # <trimmed-row>
+  fm_composer_idle_matches "$1" "${FM_COMPOSER_KIMI_STATUS_RE:-$FM_COMPOSER_KIMI_STATUS_RE_DEFAULT}" sensitive
+}
+
 # _fm_composer_wrap_region_ok: 0 when every row STRICTLY BELOW <glyph-row>
 # through <cursor-row> is non-blank and carries no structural edge - the
 # contiguity proof that those rows are the bare composer's wrapped input
