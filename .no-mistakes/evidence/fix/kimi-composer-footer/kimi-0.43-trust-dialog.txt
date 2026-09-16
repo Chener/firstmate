@@ -1,0 +1,34 @@
+# Real Kimi Code CLI 0.43.0 launched with --auto in a fresh directory (isolated KIMI_CODE_HOME), first-launch trust dialog, tmux capture-pane -p
+# cursor_y=22
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+bash-3.2$ env -u CLAUDECODE -u CURSOR_AGENT KIMI_CODE_HOME=/tmp/fm-kimi-home.pQRDQD/home KIMI_CODE_NO_AUTO_UPD
+ATE=1 KIMI_CLI_NO_AUTO_UPDATE=1 KIMI_DISABLE_TELEMETRY=1 KIMI_DISABLE_CRON=1 /Users/chener/.kimi-code/bin/kimi
+ --auto
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Trust this folder?
+  ↑↓ navigate · Enter select · Esc exit
+
+  /private/tmp/fm-kimi-home.pQRDQD/wt
+
+  Project-level MCP servers are disabled until you explicitly choose Trust. Trust starts the listed project
+  MCP targets and remembers this folder.
+
+   ❯ Trust this folder
+     Enable project MCP servers. Remembered for this folder.
+
+     Don't trust
+     Exit Kimi Code. Asked again next launch.
+
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+

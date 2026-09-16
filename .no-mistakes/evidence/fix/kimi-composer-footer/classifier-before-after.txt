@@ -1,0 +1,30 @@
+# fm_composer_classify_screen verdicts: BASE = bin/fm-composer-lib.sh at bdcacb9 (before fix), TARGET = at a2b92b0 (after fix)
+# 'want' is the intended verdict after the fix; ADV rows try to break the stale-box guard and the narrowed matcher
+
+BASE    captured Herdr 0.42 read, herdr caps            (want empty) unknown
+BASE    captured Herdr 0.42 read, tmux caps cursor=1    (want empty) empty
+BASE    typed text + footer, herdr caps                 (want pending) unknown
+BASE    footer below box, cmux/orca plain caps          (want empty) unknown
+BASE    footer below box, zellij caps                   (want empty) unknown
+BASE    blank-separated footer (old fixture), plain     (want empty) empty
+BASE    ADV grok box + contiguous 'Grok status' row     (want unknown) unknown
+BASE    ADV box + arbitrary transcript row directly below (want unknown) unknown
+BASE    ADV 'Ask When Needed' footer (uncaptured mode)  (want unknown) unknown
+BASE    ADV same, FM_COMPOSER_KIMI_STATUS_RE override   (want empty) unknown
+BASE    ADV 'Never Ask' row lacking thinking:/ctrl+o    (want unknown) unknown
+BASE    ADV footer then dead shell '$ ' below           (want unknown) unknown
+BASE    ADV Never Ask row under opencode LEFT-BAR       (want unknown) unknown
+
+TARGET  captured Herdr 0.42 read, herdr caps            (want empty) empty
+TARGET  captured Herdr 0.42 read, tmux caps cursor=1    (want empty) empty
+TARGET  typed text + footer, herdr caps                 (want pending) pending
+TARGET  footer below box, cmux/orca plain caps          (want empty) empty
+TARGET  footer below box, zellij caps                   (want empty) empty
+TARGET  blank-separated footer (old fixture), plain     (want empty) empty
+TARGET  ADV grok box + contiguous 'Grok status' row     (want unknown) unknown
+TARGET  ADV box + arbitrary transcript row directly below (want unknown) unknown
+TARGET  ADV 'Ask When Needed' footer (uncaptured mode)  (want unknown) unknown
+TARGET  ADV same, FM_COMPOSER_KIMI_STATUS_RE override   (want empty) empty
+TARGET  ADV 'Never Ask' row lacking thinking:/ctrl+o    (want unknown) unknown
+TARGET  ADV footer then dead shell '$ ' below           (want unknown) unknown
+TARGET  ADV Never Ask row under opencode LEFT-BAR       (want unknown) unknown

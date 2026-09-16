@@ -1,0 +1,12 @@
+# Live Kimi 0.43.0 idle composer (real tmux pane, --auto) classified by bin/fm-composer-lib.sh at BASE bdcacb9 vs TARGET a2b92b0
+# Capture: kimi-0.43-idle-composer.ansi (tmux capture-pane -e -p), cursor_y=28
+BASE     fm-composer-lib.base.sh          herdr(styled,no cursor)=unknown  cmux/orca(plain)=unknown  zellij=unknown  tmux(cursor=28)=empty
+TARGET   fm-composer-lib.sh               herdr(styled,no cursor)=empty    cmux/orca(plain)=empty    zellij=empty    tmux(cursor=28)=empty
+
+# Real tmux adapter (bin/fm-tmux-lib.sh fm_tmux_composer_state kimi:0) at TARGET:
+bin/fm-tmux-lib.sh:.:45: no such file or directory: ./fm-composer-lib.sh
+bin/fm-tmux-lib.sh:.:47: no such file or directory: ./fm-cursor-lib.sh
+fm_composer_normalize_spaces_var:1: bad substitution
+fm_tmux_composer_state kimi:0 -> 
+# Real tmux adapter (bin/fm-tmux-lib.sh fm_tmux_composer_state kimi:0) at TARGET, idle pane:
+fm_tmux_composer_state kimi:0 -> empty

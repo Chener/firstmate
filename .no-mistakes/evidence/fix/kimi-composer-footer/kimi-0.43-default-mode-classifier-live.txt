@@ -1,0 +1,6 @@
+# Live Kimi 0.43.0 launched WITHOUT --auto (footer mode the narrowed default matcher deliberately excludes), TARGET a2b92b0
+# Capture: kimi-0.43-default-mode-composer.ansi, cursor_y=27
+# observed footer row: Ask When Needed  K3-256k thinking: high  …/tmp/fm-kimi-home.pQRDQD/wt                   /model: switch model
+TARGET   fm-composer-lib.sh               herdr(styled,no cursor)=unknown  cmux/orca(plain)=unknown  zellij=unknown  tmux(cursor=27)=empty
+# same capture with the FM_COMPOSER_KIMI_STATUS_RE escape hatch: ^[[:space:]]*Ask When[[:space:]].*thinking:
+OVERRIDE fm-composer-lib.sh               herdr(styled,no cursor)=empty    cmux/orca(plain)=empty    zellij=empty    tmux(cursor=27)=empty

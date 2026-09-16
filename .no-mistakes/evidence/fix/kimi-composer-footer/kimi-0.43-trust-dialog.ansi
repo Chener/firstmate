@@ -1,0 +1,32 @@
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+bash-3.2$ env -u CLAUDECODE -u CURSOR_AGENT KIMI_CODE_HOME=/tmp/fm-kimi-home.pQRDQD/home KIMI_CODE_NO_AUTO_UPD
+ATE=1 KIMI_CLI_NO_AUTO_UPDATE=1 KIMI_DISABLE_TELEMETRY=1 KIMI_DISABLE_CRON=1 /Users/chener/.kimi-code/bin/kimi
+ --auto
+ [38;2;79;168;255m────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+ [1m[38;2;79;168;255m Trust this folder?[0m
+ [38;2;107;107;107m ↑↓ navigate · Enter select · Esc exit[39m
+
+  [38;2;245;245;245m/private/tmp/fm-kimi-home.pQRDQD/wt[39m
+
+  [38;2;107;107;107mProject-level MCP servers are disabled until you explicitly choose Trust. Trust starts the listed project[39m
+  [38;2;107;107;107mMCP targets and remembers this folder.[39m
+
+ [38;2;79;168;255m  ❯ [1mTrust this folder[0m
+     [38;2;107;107;107mEnable project MCP servers. Remembered for this folder.[39m
+
+ [38;2;136;136;136m    [38;2;224;224;224mDon't trust[39m
+     [38;2;107;107;107mExit Kimi Code. Asked again next launch.[39m
+
+ [38;2;79;168;255m────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+
+
+
+
+
+
+
+
+

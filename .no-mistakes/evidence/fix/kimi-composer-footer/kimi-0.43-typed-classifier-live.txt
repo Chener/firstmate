@@ -1,0 +1,7 @@
+# Live Kimi 0.43.0 composer with UNSUBMITTED typed text (real tmux pane, no Enter sent) at BASE bdcacb9 vs TARGET a2b92b0
+# Capture: kimi-0.43-typed-composer.ansi, cursor_y=28
+BASE     fm-composer-lib.base.sh          herdr(styled,no cursor)=unknown  cmux/orca(plain)=unknown  zellij=unknown  tmux(cursor=28)=pending
+TARGET   fm-composer-lib.sh               herdr(styled,no cursor)=pending  cmux/orca(plain)=pending  zellij=pending  tmux(cursor=28)=pending
+
+# Real tmux adapter at TARGET, typed pane:
+fm_tmux_composer_state kimi:0 -> pending

@@ -1,0 +1,15 @@
+# Targeted suites at TARGET a2b92b0
+## bash tests/fm-composer-lib.test.sh (exit 0)
+20:ok - matrix: real Kimi captures classify empty on cursorless and cursor backends while typed text stays pending
+27:ok - fm_composer_classify_screen: cursorless containers reject only contiguous unclaimed activity
+ok=35 not_ok=0
+
+## bash tests/fm-kimi-harness.test.sh (exit 0)
+5:ok - fm-spawn: kimi launches, delivers its brief, and registers a guarded turn-end token
+12:ok - fm-spawn: kimi never sends the brief pointer before an observable ready signal
+18:ok - composer classifier: kimi's existing bordered > shape is already safe without an override
+ok=17 not_ok=0
+
+# Regression reproduction: the TARGET composer suite run against the BASE bdcacb9 bin/fm-composer-lib.sh (suite stops at first failure)
+exit=1
+22:not ok - kimi idle from Herdr pane read: expected empty, got 'unknown'

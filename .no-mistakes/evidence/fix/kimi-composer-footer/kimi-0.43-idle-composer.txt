@@ -1,0 +1,33 @@
+# Real Kimi Code CLI 0.43.0 (--auto) idle composer, tmux capture-pane -p, cursor_y=28
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+bash-3.2$ env -u CLAUDECODE -u CURSOR_AGENT KIMI_CODE_HOME=/tmp/fm-kimi-home.pQRDQD/home KIMI_CODE_NO_AUTO_UPD
+ATE=1 KIMI_CLI_NO_AUTO_UPDATE=1 KIMI_DISABLE_TELEMETRY=1 KIMI_DISABLE_CRON=1 /Users/chener/.kimi-code/bin/kimi
+ --auto
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │                                                                                                          │
+ │  ▐█▛█▛█▌  Welcome to Kimi Code!                                                                          │
+ │  ▐█████▌  Send /help for help information.                                                               │
+ │                                                                                                          │
+ │  Directory: /private/tmp/fm-kimi-home.pQRDQD/wt                                                          │
+ │  Session:                                                                                                │
+ │  Model:     K3-256k                                                                                      │
+ │  Version:   0.43.0                                                                                       │
+ │                                                                                                          │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ ✦ Try Kimi Code Web UI - clearer task progress, visual sessions & settings management
+   Run /web to continue your session in the browser
+
+   No session yet — one will be created on your first message.
+   tmux extended-keys is off. Modified Enter keys may not work. Add `set -g extended-keys on` to ~/.tmux.conf
+ and restart tmux.
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ >                                                                                                        │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ Never Ask  K3-256k thinking: high  …/tmp/fm-kimi-home.pQRDQD/wt
+                                                                                         context: 0% (0/256k)
