@@ -481,10 +481,11 @@ fm_composer_strip_braille() {
 }
 
 # Kimi 0.4x draws its status footer directly below the bordered composer.
-# These anchored forms cover the captured permission-mode and context rows
-# without treating arbitrary activity below another harness's stale box as
-# footer furniture.
-FM_COMPOSER_KIMI_STATUS_RE_DEFAULT='^[[:space:]]*(Never Ask|Ask When Needed|Plan)([[:space:]]|$).*(thinking:|ctrl\+o[[:space:]]+expand|No session yet)|^[[:space:]]*context:[[:space:]]*[0-9]+%[[:space:]]*\([^)]*\)([[:space:]]|$)'
+# This anchored form covers the captured permission-mode row (`Never Ask`
+# leading, then `thinking:` or `ctrl+o expand` later on the row) without
+# treating arbitrary activity below another harness's stale box as footer
+# furniture; FM_COMPOSER_KIMI_STATUS_RE overrides it for other modes.
+FM_COMPOSER_KIMI_STATUS_RE_DEFAULT='^[[:space:]]*Never Ask[[:space:]].*(thinking:|ctrl\+o[[:space:]]+expand)'
 
 # The bounded row window adapters should capture for a composer read. One
 # shared policy (previously three per-backend variables that had drifted to
