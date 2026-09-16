@@ -55,6 +55,11 @@
 #                writes its model name there); a titled bottom border that
 #                still starts and ends with the family's rule glyph is
 #                tolerated, including Grok 1.0.5's three-column title overhang.
+#                On a cursorless read (herdr, zellij, orca, cmux) non-edge
+#                text directly below the bottom border proves the box stale,
+#                except kimi's status footer (FM_COMPOSER_KIMI_STATUS_RE_DEFAULT,
+#                declared once below next to omp's status row), which kimi
+#                0.4x draws there on every idle pane.
 #   bare       - an agent prompt glyph row with no border at all (claude `❯`,
 #                codex `›`, muse `⟩`, cursor `→`). The agent glyph is itself the container
 #                proof; a bare SHELL glyph (`>` `$` `%` `#`) never is.
