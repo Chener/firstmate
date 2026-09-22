@@ -475,7 +475,7 @@ FM_COMPOSER_MODE_HINT_RE_DEFAULT='^[[:space:]]*(⏵|⏸)'
 # Kimi draws these two rows immediately below its bordered `>` composer.
 # Match the observed permission tier, effort labels, and context cell shape;
 # the footer-zone walk below also requires the pair in order.
-FM_COMPOSER_KIMI_STATUS_RE_DEFAULT='^Never Ask[[:space:]]+[^[:space:]]+[[:space:]]+thinking:[[:space:]]+(low|high|max)([[:space:]]|$)'
+FM_COMPOSER_KIMI_STATUS_RE_DEFAULT='^Never Ask[[:space:]]+[^[:space:]]+([[:space:]]+[^[:space:]]+)?[[:space:]]+thinking:[[:space:]]+(low|high|max)([[:space:]]|$)'
 FM_COMPOSER_KIMI_CONTEXT_RE_DEFAULT='^context:[[:space:]]+[0-9]+%[[:space:]]+\([0-9]+([.][0-9]+)?[kKmM]?/[0-9]+[kKmM]\)$'
 # omp (Oh My Pi) draws a one-row status line directly BELOW its borderless
 # composer: an identity or spinner cell, then middle-dot separated model, path,

@@ -682,8 +682,10 @@ test_matrix_grok_titled_bottom_border() {
 
 test_matrix_kimi_footer_zone() {
   # Captured Kimi Herdr status rows sit immediately below the bordered box.
-  local herdr tmux typed status_only context_only activity resumed altered same_glyph unboxed
+  local herdr live tmux typed status_only context_only activity resumed altered same_glyph unboxed
   herdr=$' ╭────────────────────────────────────────────────────────────────────────────╮\n │ >                                                                          │\n ╰────────────────────────────────────────────────────────────────────────────╯\n Never Ask  K3-256k thinking: high  …/scratchpad/lab/wt  master\n                                                                context: 0% (0/256k)'
+  live=${herdr/K3-256k thinking: high/K2.8 Preview thinking: max}
+  live=${live/0\/256k/0\/1M}
   tmux=$herdr
   typed=$'╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master    ctrl+o expand\ncontext: 0% (0/256k)'
   status_only=${herdr%$'\n'*}
@@ -694,6 +696,7 @@ test_matrix_kimi_footer_zone() {
   same_glyph=$herdr$'\n> new input'
   unboxed=$' >\nNever Ask  K3-256k thinking: high  …/worktree  master\ncontext: 0% (0/256k)'
   assert_screen "kimi idle from Herdr pane read" empty "$CAPS_STYLED" "$herdr"
+  assert_screen "kimi 2.0.2 multiword model idle from Herdr pane read" empty "$CAPS_STYLED" "$live"
   assert_screen "kimi idle with tmux cursor" empty "$CAPS_TMUX" "$tmux" 1
   assert_screen "kimi typed text with status footer" pending "$CAPS_STYLED" "$typed"
   assert_screen "kimi missing context row" unknown "$CAPS_STYLED" "$status_only"
