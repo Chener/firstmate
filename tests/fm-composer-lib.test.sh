@@ -680,17 +680,43 @@ test_matrix_grok_titled_bottom_border() {
   pass "matrix: grok's real oversized titled bottom is empty while typed and unproved panes stay safe"
 }
 
-test_matrix_kimi_bordered_shell_glyph_box() {
-  # A real Kimi 0.42.0 Herdr pane read has the status footer immediately below
-  # the bordered composer; the report's tmux counterfactual adds its cursor.
-  local herdr tmux typed
+test_matrix_kimi_footer_zone() {
+  # Captured Kimi Herdr status rows sit immediately below the bordered box.
+  local herdr tmux typed status_only context_only activity resumed altered same_glyph unboxed
   herdr=$' ╭────────────────────────────────────────────────────────────────────────────╮\n │ >                                                                          │\n ╰────────────────────────────────────────────────────────────────────────────╯\n Never Ask  K3-256k thinking: high  …/scratchpad/lab/wt  master\n                                                                context: 0% (0/256k)'
   tmux=$herdr
   typed=$'╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master    ctrl+o expand\ncontext: 0% (0/256k)'
+  status_only=${herdr%$'\n'*}
+  context_only=$'╭────────────────────────╮\n│ >                      │\n╰────────────────────────╯\ncontext: 0% (0/256k)'
+  activity=$status_only$'\nWorking on request...'
+  resumed=$herdr$'\nWorking on request...'
+  altered=${herdr/Never Ask/Unknown Tier}
+  same_glyph=$herdr$'\n> new input'
+  unboxed=$' >\nNever Ask  K3-256k thinking: high  …/worktree  master\ncontext: 0% (0/256k)'
   assert_screen "kimi idle from Herdr pane read" empty "$CAPS_STYLED" "$herdr"
   assert_screen "kimi idle with tmux cursor" empty "$CAPS_TMUX" "$tmux" 1
   assert_screen "kimi typed text with status footer" pending "$CAPS_STYLED" "$typed"
-  pass "matrix: real Kimi captures classify empty on cursorless and cursor backends while typed text stays pending"
+  assert_screen "kimi missing context row" unknown "$CAPS_STYLED" "$status_only"
+  assert_screen "kimi missing status row" unknown "$CAPS_STYLED" "$context_only"
+  assert_screen "kimi status followed by activity" unknown "$CAPS_STYLED" "$activity"
+  assert_screen "kimi footer followed by activity" unknown "$CAPS_STYLED" "$resumed"
+  assert_screen "kimi unknown permission label" unknown "$CAPS_STYLED" "$altered"
+  assert_screen "kimi same glyph new input" unknown "$CAPS_STYLED" "$same_glyph"
+  assert_screen "kimi unboxed shell glyph" unknown "$CAPS_STYLED" "$unboxed"
+  pass "matrix: Kimi footer pair is scoped to a proven box and every lower row is checked"
+}
+
+test_matrix_kimi_bordered_shell_glyph_box() {
+  # Kimi's bordered `│ > │` composer - the shape fm-spawn.sh's retired
+  # spawn-local regex used to own. Now the shared owner proves it everywhere,
+  # which is what kimi launch-readiness and delivery route through.
+  local screen
+  screen=$'╭────────────────────────╮\n│ >                      │\n╰────────────────────────╯'
+  assert_screen "kimi idle on tmux" empty "$CAPS_TMUX" "$screen" 1
+  assert_screen "kimi idle on cmux/orca" empty "$CAPS_PLAIN" "$screen"
+  assert_screen "kimi idle on herdr" empty "$CAPS_STYLED" "$screen"
+  assert_screen "kimi idle on zellij" empty "$CAPS_STYLED_NOID" "$screen"
+  pass "matrix: kimi's bordered shell-glyph box reads empty through the shared owner (spawn's fourth copy retired)"
 }
 
 test_matrix_claude_inside_zellij_ansi_dump() {
@@ -817,10 +843,10 @@ test_cursorless_container_rejects_contiguous_lower_activity() {
   assert_screen "stale left-bar above activity on cmux/orca" unknown "$CAPS_PLAIN" "$leftbar"
 
   grok=$'╭────────────────────────╮\n│ ❯                      │\n╰──────── Grok 4.5 ──────╯\n\nGrok status'
-  kimi=$'╭────────────────────────╮\n│ >                      │\n╰────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master\ncontext: 0% (0/256k)'
+  kimi=$'╭────────────────────────╮\n│ >                      │\n╰────────────────────────╯\n\nKimi status'
   opencode=$'┃\n┃  Ask anything...\n┃\n┃  Build · GPT-5.5 Fast OpenAI · high\n╹▀▀▀▀▀▀▀▀\n\nOpenCode status'
   assert_screen "blank-separated grok footer" empty "$CAPS_STYLED_NOID" "$grok"
-  assert_screen "kimi status footer below box" empty "$CAPS_PLAIN" "$kimi"
+  assert_screen "blank-separated kimi footer" empty "$CAPS_PLAIN" "$kimi"
   assert_screen "left-bar floor and blank-separated footer" empty "$CAPS_STYLED_NOID" "$opencode"
   pass "fm_composer_classify_screen: cursorless containers reject only contiguous unclaimed activity"
 }
@@ -930,6 +956,7 @@ test_matrix_codex_idle_starfield_furniture
 test_matrix_pi_separated_needs_identity
 test_matrix_opencode_leftbar_signals
 test_matrix_grok_titled_bottom_border
+test_matrix_kimi_footer_zone
 test_matrix_kimi_bordered_shell_glyph_box
 test_matrix_claude_inside_zellij_ansi_dump
 test_strict_blank_row_divergence

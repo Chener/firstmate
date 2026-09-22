@@ -41,7 +41,7 @@ state=$(cat "$FM_FAKE_KIMI_STATE" 2>/dev/null || true)
 fake_screen() {
   case "$state" in
     ready)
-      printf 'Welcome to Kimi Code!\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master    ctrl+o expand\ncontext: 0%% (0/256k)\n'
+      printf 'Welcome to Kimi Code!\ncontext: 0%% (0/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n'
       ;;
     trust)
       printf '╭─ Trust this folder? ─╮\n│ ↑↓ navigate · Enter select · Esc exit │\n│ %s │\n│ ❯ Trust this folder │\n│   Don'"'"'t trust │\n╰──────────────────────────────╯\n' "$FM_FAKE_PANE_PATH"
@@ -64,10 +64,10 @@ fake_screen() {
       printf '╭─ Trust this folder? ─╮\n│ ↑↓ navigate ·        │\n│ Enter select · Esc   │\n│ exit                 │\n│ %s │\n│ ❯ Trust this folder  │\n│   Don'"'"'t trust         │\n╰──────────────────────╯\n' "$FM_FAKE_PANE_PATH"
       ;;
     pointer-typed)
-      printf '╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master    ctrl+o expand\ncontext: 0%% (0/256k)\n'
+      printf 'context: 0%% (0/256k)\n╭────────────────────────────────╮\n│ > Read the brief and follow it │\n│                                │\n╰────────────────────────────────╯\n'
       ;;
     delivered)
-      printf '✨ Read the brief at %s and follow it exactly.\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master    ctrl+o expand\ncontext: 1%% (2k/256k)\n' "$FM_FAKE_BRIEF_REAL"
+      printf '✨ Read the brief at %s and follow it exactly.\ncontext: 1%% (2k/256k)\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\n' "$FM_FAKE_BRIEF_REAL"
       ;;
     *)
       printf 'shell starting\n$ \n'
@@ -82,8 +82,8 @@ fake_history() {
 }
 fake_cursor_y() {
   case "$state" in
-    pointer-typed) printf '1\n' ;;
-    ready|delivered) printf '2\n' ;;
+    pointer-typed) printf '3\n' ;;
+    ready|delivered) printf '3\n' ;;
     *) printf '1\n' ;;
   esac
 }
@@ -1115,6 +1115,34 @@ test_kimi_bordered_prompt_needs_no_override() {
   pass "composer classifier: kimi's existing bordered > shape is already safe without an override"
 }
 
+test_kimi_herdr_footer_readiness_and_submit_confirmation() (
+  local state="$TMP_ROOT/kimi-herdr-footer.state" out
+  # The fake capture has Herdr's cursorless capability and the observed Kimi
+  # footer; the adapter and submit core are the interfaces fm-spawn consults.
+  . "$ROOT/bin/backends/herdr.sh"
+  printf 'ready\n' > "$state"
+  fm_backend_herdr_capture_ansi() {
+    case "$(cat "$state")" in
+      ready|delivered)
+        printf 'Welcome to Kimi Code!\n╭────────────────────────────────╮\n│ >                              │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master\ncontext: 0%% (0/256k)\n'
+        ;;
+      typed)
+        printf 'Welcome to Kimi Code!\n╭────────────────────────────────╮\n│ > Read the brief and follow it │\n╰────────────────────────────────╯\nNever Ask  K3-256k thinking: high  …/worktree  master\ncontext: 0%% (0/256k)\n'
+        ;;
+    esac
+  }
+  fm_backend_herdr_send_literal() { printf 'typed\n' > "$state"; }
+  fm_backend_herdr_send_key() { printf 'delivered\n' > "$state"; }
+  fm_backend_herdr_agent_status_raw() { printf 'idle'; }
+  fm_backend_herdr_wait_for_working() { printf 'idle'; }
+  out=$(fm_backend_herdr_composer_state 'fake:w1:p1')
+  [ "$out" = empty ] || fail "Kimi Herdr readiness should find an empty composer, got '$out'"
+  out=$(fm_backend_herdr_send_text_submit 'fake:w1:p1' 'Read the brief and follow it' 1 0 0)
+  [ "$out" = empty ] || fail "Kimi Herdr delivery should confirm the cleared composer, got '$out'"
+  [ "$(cat "$state")" = delivered ] || fail "Kimi Herdr delivery did not submit the pointer"
+  pass "Kimi on fake Herdr: the spawn-facing readiness and submit confirmation accept the footer pair"
+)
+
 test_kimi_hook_install_is_surgical_idempotent_and_removable
 test_kimi_hook_remove_preserves_owned_newline_boundary
 test_kimi_hook_fails_closed_on_missing_malformed_or_partial_config
@@ -1145,3 +1173,4 @@ test_kimi_session_lock_identity
 test_kimi_busy_signature_is_scoped_to_spinner_lines
 test_watcher_never_classifies_kimi_from_its_spinner
 test_kimi_bordered_prompt_needs_no_override
+test_kimi_herdr_footer_readiness_and_submit_confirmation
