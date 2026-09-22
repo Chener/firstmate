@@ -1,0 +1,62 @@
+source_capture=/Users/chener/.no-mistakes/evidence/01M343QKE70E98HSSNAWV9BXQ9/kimi-footer-product-live.txt
+target_commit=064c3b8040df0ca6a12640012f7f811e028a4c54
+capture_origin=real Kimi Code 2.0.2 in guarded Herdr 0.9.0 lab, fixed 40x120 viewer (prior test round in this no-mistakes run)
+idle_verdict=empty
+typed_verdict=pending
+settled_verdict=empty
+
+=== ACTUAL LIVE IDLE SURFACE REPLAYED THROUGH TARGET ===
+/Users/chener/.kimi-code/bin/kimi --auto
+chener@M5AirVPN ~/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9 /Users/chener
+/.kimi-code/bin/kimi --auto
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────╮
+ │                                                                                          │
+ │  ▐█▛█▛█▌  Welcome to Kimi Code!                                                          │
+ │  ▐█████▌  Send /help for help information.                                               │
+ │                                                                                          │
+ │  Directory: /Users/chener/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9 │
+ │  Session:                                                                                │
+ │  Model:     K2.8 Preview                                                                 │
+ │  Version:   2.0.2                                                                        │
+ │                                                                                          │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────╯
+
+ ✦ Kimi Code Desktop is here — Everything you love about Kimi Code, now on desktop
+   Run /desktop or visit https://www.kimi.com/code to install
+
+   No session yet — one will be created on your first message.
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────╮
+ │ >                                                                                        │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────╯
+ Never Ask  K2.8 Preview thinking: max  …/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9
+                                                                           context: 0% (0/1M)
+
+=== ACTUAL LIVE TYPED SURFACE REPLAYED THROUGH TARGET ===
+/Users/chener/.kimi-code/bin/kimi --auto
+chener@M5AirVPN ~/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9 /Users/chener
+/.kimi-code/bin/kimi --auto
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────╮
+ │                                                                                          │
+ │  ▐█▛█▛█▌  Welcome to Kimi Code!                                                          │
+ │  ▐█████▌  Send /help for help information.                                               │
+ │                                                                                          │
+ │  Directory: /Users/chener/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9 │
+ │  Session:                                                                                │
+ │  Model:     K2.8 Preview                                                                 │
+ │  Version:   2.0.2                                                                        │
+ │                                                                                          │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────╯
+
+ ✦ Kimi Code Desktop is here — Everything you love about Kimi Code, now on desktop
+   Run /desktop or visit https://www.kimi.com/code to install
+
+   No session yet — one will be created on your first message.
+
+ ╭──────────────────────────────────────────────────────────────────────────────────────────╮
+ │ > Reply only with OK.                                                                    │
+ ╰──────────────────────────────────────────────────────────────────────────────────────────╯
+ Never Ask  K2.8 Preview thinking: max  …/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9
+                                                                           context: 0% (0/1M)

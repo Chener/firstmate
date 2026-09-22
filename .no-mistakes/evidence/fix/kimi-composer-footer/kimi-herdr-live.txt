@@ -1,0 +1,25 @@
+lab_session=fm-lab-kimi-footer-live9 pane=w1:p1
+viewer attached to fm-lab-kimi-footer-live9 (pid 88203)
+
+=== INITIAL VISIBLE PANE ===
+/Users/chener/.kimi-code/bin/kimi
+chener@M5AirVPN ~/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9 /Users/chener
+/.kimi-code/bin/kimi
+ [0m[38;2;194;65;12m────────────────────────────────────────────────────────────────────────────────────────────[0m
+ [0m[1m[38;2;194;65;12m Trust this folder?[0m
+ [0m[38;2;141;122;105m ↑↓ navigate · Enter select · Esc exit[0m
+ 
+  [0m[38;2;36;24;17m/Users/chener/.no-mistakes/worktrees/2b5fd64f270b/01M343QKE70E98HSSNAWV9BXQ9[0m
+ 
+  [0m[38;2;141;122;105mProject-level MCP servers are disabled until you explicitly choose Trust. Trust starts the[0m
+  [0m[38;2;141;122;105mlisted project MCP targets and remembers this folder.[0m
+ 
+ [0m[38;2;194;65;12m  ❯ [0m[1m[38;2;194;65;12mTrust this folder[0m
+     [0m[38;2;141;122;105mEnable project MCP servers. Remembered for this folder.[0m
+ 
+ [0m[38;2;107;88;74m    [0m[38;2;59;43;35mDon't trust[0m
+     [0m[38;2;141;122;105mExit Kimi Code. Asked again next launch.[0m
+ 
+ [0m[38;2;194;65;12m────────────────────────────────────────────────────────────────────────────────────────────[0m
+=== INITIAL COMPOSER VERDICT ===
+empty
